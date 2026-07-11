@@ -4,10 +4,10 @@
 
 ## 解决了什么问题
 
-- **A1 投递混乱** — 看板 + 阶段筛选 + 跟进日期 + 逾期高亮
-- **A2 面试复盘弱（Phase 3）** — 带模板新增复盘，预填问题/自评/改进框架
-- **A4 公司信息分散（Phase 2）** — 目标公司档案库：官网 / 招聘页 / 内推信息 / 面经外链，投递可关联复用
-- **A3 准备无结构（Phase 3）** — 投递详情一键填充 Java 后端准备清单
+- **A1 投递混乱** — 看板 + 阶段筛选 + 跟进日期 + 逾期高亮 + **本周面试列表** + **投递搜索** + **Markdown 导出**
+- **A2 面试复盘弱（Phase 3/5）** — 带模板新增复盘（Java / 前端 React / Go），预填问题/自评/改进框架
+- **A4 公司信息分散（Phase 2/4/5）** — 目标公司档案库 + 3 套 seed 导入 + 搜索 + 手动公司名关联提示
+- **A3 准备无结构（Phase 3/5）** — 投递详情按模板填充准备清单（Java / 前端 / Go）
 
 ## 环境要求
 
@@ -43,11 +43,12 @@ cd offerflow
 
 | 路径 | 功能 |
 |------|------|
-| `/dashboard` | 进行中 / 本周面试 / 逾期跟进 |
-| `/applications` | 投递列表 + 阶段筛选 |
+| `/dashboard` | 进行中 / 本周面试列表 / 逾期跟进 |
+| `/applications` | 投递列表 + 阶段筛选 + 公司/岗位搜索 |
 | `/applications/new` | 新增投递（可选公司档案或手动输入） |
-| `/applications/{id}` | 详情 + 公司档案 + 准备模板 + 面试复盘 |
-| `/companies` | 目标公司列表 + 行业筛选 + 名称搜索 + seed 导入 |
+| `/applications/{id}` | 详情 + 导出 Markdown + 模板选择 + 面试复盘 |
+| `/applications/{id}/export` | 下载该投递的 Markdown 备份 |
+| `/companies` | 目标公司列表 + 搜索 + seed 包下拉导入 |
 | `/companies/new` | 新增公司档案 |
 | `/companies/{id}` | 公司详情（外链、内推、关联投递） |
 | `/h2-console` | H2 数据库控制台（开发调试用） |
@@ -136,6 +137,48 @@ feat(interview): prefill debrief form from template + web tests
 
 设计背景见 [`docs/superpowers/specs/2026-07-12-interview-template-design.md`](docs/superpowers/specs/2026-07-12-interview-template-design.md)。
 
+## Phase 5：体验打磨 + 扩展包
+
+Phase 5 补齐 **A1 日常使用摩擦**，并扩展 seed / 模板生态。
+
+### 功能概览
+
+| 能力 | 说明 |
+|------|------|
+| **本周面试列表** | 仪表盘展示本周面试明细，一键跳转投递详情 |
+| **投递搜索** | `GET /applications?q=美团` 按公司名或岗位模糊匹配，可与阶段筛选组合 |
+| **Markdown 导出** | 投递详情「导出 Markdown」，含 JD、准备清单、全部复盘 |
+| **3 套公司 seed** | 互联网（18）/ 金融科技（10）/ 外企科技（10），列表页下拉选择导入 |
+| **3 套面试模板** | Java 后端 / 前端 React / Go 后端，详情页下拉填充 prep + 带模板复盘 |
+| **公司名关联提示** | 手动输入已存在公司名时 flash 提示从下拉关联（不阻断保存） |
+
+### Seed / 模板一览
+
+| 类型 | Pack ID | 文件 |
+|------|---------|------|
+| 公司 seed | `java-backend-internet` | `seeds/java-backend-internet.json` |
+| 公司 seed | `finance-tech` | `seeds/finance-tech.json` |
+| 公司 seed | `foreign-tech` | `seeds/foreign-tech.json` |
+| 面试模板 | `java-backend` | `seeds/java-backend-interview.json` |
+| 面试模板 | `frontend-react` | `seeds/frontend-react-interview.json` |
+| 面试模板 | `go-backend` | `seeds/go-backend-interview.json` |
+
+### 相关 commit（Task 17–25）
+
+```
+feat(application): add application search on list page
+feat(dashboard): add this week interviews list
+feat(application): add markdown export for application detail
+feat(company): add finance and foreign tech seed packs
+feat(company): add seed pack selector on company list
+feat(interview): add frontend and go interview template packs
+feat(application): add interview template selector on detail page
+feat(application): suggest linking manual company name to dossier
+docs: document Phase 5 polish and expansion packs
+```
+
+设计背景见 [`docs/superpowers/specs/2026-07-12-phase5-polish-expansion-design.md`](docs/superpowers/specs/2026-07-12-phase5-polish-expansion-design.md)。
+
 ## 数据存储
 
 H2 文件数据库位于 `./data/offerflow.*`。删除 `data/` 目录可重置全部数据。
@@ -153,6 +196,7 @@ offerflow/
 │       └── repository/       # 数据访问
 ├── src/main/resources/
 │   ├── templates/            # Thymeleaf 页面
+│   ├── seeds/                # 公司 seed + 面试模板 JSON
 │   └── static/css/           # 样式
 ├── src/test/java/            # 单元测试
 ├── .claude/                  # CC 技能与 hooks
@@ -178,8 +222,8 @@ Java 17 · Spring Boot 3.3 · Thymeleaf · Spring Data JPA · H2 · Gradle
 
 ## 后续规划
 
-- 更多面试模板包（前端、Go 等）
-- 更多 seed 包（金融、外企等）+ 导入时选择 seed
+- 批量 Markdown 导出（zip）
+- seed / 模板预览弹窗
 - 用户账号 + MySQL 云同步
 - 移动端 App
 - 邮件/微信提醒逾期跟进

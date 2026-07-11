@@ -45,6 +45,7 @@
   - 实现目标公司档案：官网/招聘页/内推信息/面经外链；投递表单可选公司或手动输入；详情页展示档案卡片
   - **Phase 4（seed + 搜索）**：编写 `2026-07-12-company-seed-design.md`；实现 `CompanySeedService` + 18 家互联网 seed JSON；列表页名称搜索与「导入 seed」按钮（Task 11–13）
   - **Phase 3（面经/准备模板）**：`2026-07-12-interview-template-design.md`；Java 后端 prep + debrief seed；投递详情填充清单 + 带模板新增复盘（Task 14–16）
+  - **Phase 5（打磨 + 扩展）**：`2026-07-12-phase5-polish-expansion-design.md`；投递搜索、仪表盘本周面试、Markdown 导出；3 套公司 seed + 3 套面试模板下拉选择；手动公司名关联提示（Task 17–25）
 
 ---
 
@@ -68,6 +69,7 @@
 2. **分 Task + 规范 commit**（`feat(scope): subject`）让 7 天 git 历史清晰可读，面试 Demo 时可以按 commit 讲演进
 3. **手动测试 + brainstorming 复盘** 比直接让 AI「修一下」更有效——先列清 4 个 bug 和根因，再写 spec，一轮 commit 就收敛
 4. **Phase 2 公司档案** 同一公司投多岗时，内推/招聘页只维护一次，投递详情一键外链
+5. **Phase 5 seed/模板 Registry** 新增一个 JSON 文件 + 注册表条目即可扩展，无需改核心逻辑
 
 ---
 
@@ -83,16 +85,16 @@
 
 | 事项 | 状态 |
 |------|------|
-| 推送远程 `origin/master` | 待做（Phase 4 Task 11–13 本地已 commit，待 push） |
+| 推送远程 `origin/master` | 待做（Phase 5 Task 17–25 本地已 commit，待 push） |
 | 录 3–5 分钟 Demo 视频 | 待做 |
 | 全站手动 QA | 待做 |
 | 按作业要求发邮件 | 待做 |
 
-## 后续产品方向（Phase 3+）
+## 后续产品方向
 
-- 面经模板题单（按岗位类型，非 AI 生成）
-- 更多行业 seed 公司包
-- 投递导出 Markdown、仪表盘本周面试列表
+- 面经全文搜索 + 间隔重复复习
+- 批量导出 / 云同步
+- 更多行业 seed 与模板包（按需扩展 JSON）
 
 ---
 
@@ -124,6 +126,6 @@
 
 ## Superpowers 体验笔记
 
-- **完整走过 brainstorming：** 是（Day 1 MVP、Day 2 bugfix、Phase 2 规划）
+- **完整走过 brainstorming：** 是（Day 1 MVP、Day 2 bugfix、Phase 2/3/4/5 规划）
 - **是否绕开某些流程：** 小 bug 修复时用过 Lightweight Mode；大功能仍走 spec
 - **绕开原因：** 单行模板修复不需要完整 brainstorming，但涉及 3+ 文件仍先列清单
