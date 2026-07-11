@@ -44,9 +44,24 @@ public class CompanyService {
 
     @Transactional(readOnly = true)
     public List<Company> findAll(Optional<String> industry) {
-        return industry.filter(value -> !value.isBlank())
-                .map(companyRepository::findByIndustryOrderByNameAsc)
-                .orElseGet(companyRepository::findAllByOrderByNameAsc);
+        return search(Optional.empty(), industry);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Company> search(Optional<String> query, Optional<String> industry) {
+        String q = query.map(String::trim).filter(value -> !value.isBlank()).orElse(null);
+        String ind = industry.map(String::trim).filter(value -> !value.isBlank()).orElse(null);
+
+        if (q == null && ind == null) {
+            return companyRepository.findAllByOrderByNameAsc();
+        }
+        if (q == null) {
+            return companyRepository.findByIndustryOrderByNameAsc(ind);
+        }
+        if (ind == null) {
+            return companyRepository.findByNameContainingIgnoreCaseOrderByNameAsc(q);
+        }
+        return companyRepository.findByNameContainingIgnoreCaseAndIndustryOrderByNameAsc(q, ind);
     }
 
     @Transactional(readOnly = true)

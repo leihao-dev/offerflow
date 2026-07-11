@@ -10,6 +10,7 @@ import com.offerflow.service.CompanyNotFoundException;
 import com.offerflow.service.CompanyService;
 import com.offerflow.service.DuplicateCompanyNameException;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -104,7 +105,16 @@ class CompanyServiceTest {
         finance.setIndustry("金融");
         companyService.create(finance);
 
-        assertEquals(1, companyService.findAll(java.util.Optional.of("金融")).size());
-        assertEquals(2, companyService.findAll(java.util.Optional.empty()).size());
+        assertEquals(1, companyService.search(Optional.empty(), Optional.of("金融")).size());
+        assertEquals(2, companyService.search(Optional.empty(), Optional.empty()).size());
+    }
+
+    @Test
+    void searchByNamePartialMatch() {
+        companyService.create(sampleForm("字节跳动"));
+        companyService.create(sampleForm("腾讯"));
+
+        assertEquals(1, companyService.search(Optional.of("字节"), Optional.empty()).size());
+        assertEquals(0, companyService.search(Optional.of("不存在"), Optional.empty()).size());
     }
 }

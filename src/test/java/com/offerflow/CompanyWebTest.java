@@ -63,4 +63,17 @@ class CompanyWebTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("目标公司")));
     }
+
+    @Test
+    void listSearchByCompanyName() throws Exception {
+        mockMvc.perform(post("/companies")
+                        .param("name", "美团")
+                        .param("industry", "互联网"))
+                .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(get("/companies").param("q", "美团"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("美团")))
+                .andExpect(content().string(containsString("type=\"search\"")));
+    }
 }

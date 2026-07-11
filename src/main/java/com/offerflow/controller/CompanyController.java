@@ -30,10 +30,14 @@ public class CompanyController {
     }
 
     @GetMapping
-    public String list(@RequestParam(required = false) String industry, Model model) {
-        model.addAttribute("companies", companyService.findAll(Optional.ofNullable(industry)));
+    public String list(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) String industry,
+            Model model) {
+        model.addAttribute("companies", companyService.search(Optional.ofNullable(q), Optional.ofNullable(industry)));
         model.addAttribute("industries", companyService.findDistinctIndustries());
         model.addAttribute("selectedIndustry", industry);
+        model.addAttribute("searchQuery", q);
         return "companies/list";
     }
 
