@@ -38,8 +38,27 @@ class ApplicationWebTest {
 
         mockMvc.perform(get(redirectUrl))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Java 后端 · 准备模板")))
+                .andExpect(content().string(containsString("准备模板")))
                 .andExpect(content().string(containsString("填充准备清单")));
+    }
+
+    @Test
+    void detailShowsTemplateSelector() throws Exception {
+        String redirectUrl = mockMvc.perform(post("/applications")
+                        .param("companyName", "测试公司")
+                        .param("positionTitle", "Java 后端")
+                        .param("stage", "APPLIED")
+                        .param("appliedAt", "2026-07-12"))
+                .andExpect(status().is3xxRedirection())
+                .andReturn()
+                .getResponse()
+                .getRedirectedUrl();
+
+        mockMvc.perform(get(redirectUrl))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("前端 React")))
+                .andExpect(content().string(containsString("Go 后端")))
+                .andExpect(content().string(containsString("+ 复盘（Java 后端）")));
     }
 
     @Test

@@ -93,6 +93,7 @@ public class ApplicationController {
         model.addAttribute("jobApplication", application);
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
+        model.addAttribute("templatePacks", interviewTemplateService.listAvailableTemplates());
         return "applications/detail";
     }
 
