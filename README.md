@@ -79,7 +79,7 @@ feat(company): add company library web pages
 feat(application): link applications to company dossier
 ```
 
-设计背景见 [`docs/superpowers/specs/2026-07-11-offerflow-design.md`](docs/superpowers/specs/2026-07-11-offerflow-design.md)（长期愿景 Phase 5）及 Day 2 `/think` 规划。
+设计背景见 [`docs/superpowers/specs/2026-07-11-offerflow-design.md`](docs/superpowers/specs/2026-07-11-offerflow-design.md)（长期愿景 A4 / Phase 5）及 [`docs/superpowers/specs/2026-07-11-offerflow-bugfix-round2-design.md`](docs/superpowers/specs/2026-07-11-offerflow-bugfix-round2-design.md)（Day 2 主路径修复）。
 
 ## 数据存储
 
