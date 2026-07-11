@@ -28,8 +28,9 @@
             <div class="stat-value" th:text="${dashboard.interviewsThisWeek()}">0</div>
             <div class="stat-label">本周面试</div>
         </div>
-        <div class="card">
-            <div class="stat-value" th:text="${dashboard.overdueCount()}">0</div>
+        <div class="card" th:classappend="${dashboard.overdueCount() > 0} ? 'card-alert' : ''">
+            <div class="stat-value" th:classappend="${dashboard.overdueCount() > 0} ? 'stat-alert' : ''"
+                 th:text="${dashboard.overdueCount()}">0</div>
             <div class="stat-label">逾期未跟进</div>
         </div>
     </div>

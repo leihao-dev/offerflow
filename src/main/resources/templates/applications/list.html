@@ -19,9 +19,9 @@
     <h1>投递列表</h1>
 
     <div class="actions">
-        <a class="btn" th:classappend="${selectedStage == null} ? ' btn-primary' : ''" th:href="@{/applications}">全部</a>
+        <a class="btn btn-sm" th:classappend="${selectedStage == null} ? 'btn-primary' : ''" th:href="@{/applications}">全部</a>
         <a class="btn btn-sm" th:each="s : ${stages}"
-           th:classappend="${selectedStage == s} ? ' btn-primary' : ''"
+           th:classappend="${selectedStage == s} ? 'btn-primary' : ''"
            th:href="@{/applications(stage=${s})}"
            th:text="${stageLabels[s]}">阶段</a>
     </div>

@@ -64,7 +64,13 @@ nav a:hover { color: var(--primary); }
 }
 
 .stat-value { font-size: 2rem; font-weight: 700; }
+.stat-value.stat-alert { color: var(--danger); }
 .stat-label { color: var(--muted); font-size: 0.9rem; }
+
+.card-alert {
+    border-color: #fecaca;
+    background: #fef2f2;
+}
 
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 10px 8px; border-bottom: 1px solid var(--border); text-align: left; }
