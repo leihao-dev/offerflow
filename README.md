@@ -5,9 +5,9 @@
 ## 解决了什么问题
 
 - **A1 投递混乱** — 看板 + 阶段筛选 + 跟进日期 + 逾期高亮
-- **A2 面试复盘弱** — 每条投递下记录问题、自评、改进项
+- **A2 面试复盘弱（Phase 3）** — 带模板新增复盘，预填问题/自评/改进框架
 - **A4 公司信息分散（Phase 2）** — 目标公司档案库：官网 / 招聘页 / 内推信息 / 面经外链，投递可关联复用
-- **A3 预留** — 准备清单、JD 原文、岗位级调研笔记字段
+- **A3 准备无结构（Phase 3）** — 投递详情一键填充 Java 后端准备清单
 
 ## 环境要求
 
@@ -46,7 +46,7 @@ cd offerflow
 | `/dashboard` | 进行中 / 本周面试 / 逾期跟进 |
 | `/applications` | 投递列表 + 阶段筛选 |
 | `/applications/new` | 新增投递（可选公司档案或手动输入） |
-| `/applications/{id}` | 详情 + 公司档案卡片 + 面试复盘 |
+| `/applications/{id}` | 详情 + 公司档案 + 准备模板 + 面试复盘 |
 | `/companies` | 目标公司列表 + 行业筛选 + 名称搜索 + seed 导入 |
 | `/companies/new` | 新增公司档案 |
 | `/companies/{id}` | 公司详情（外链、内推、关联投递） |
@@ -109,6 +109,33 @@ feat(company): add seed import action on company list UI
 
 设计背景见 [`docs/superpowers/specs/2026-07-12-company-seed-design.md`](docs/superpowers/specs/2026-07-12-company-seed-design.md)。
 
+## Phase 3：面经 / 准备模板
+
+Phase 3 补全 **A2 + A3**：面试前有结构化的准备清单，面试后有复盘框架可填。
+
+### 功能概览
+
+| 能力 | 说明 |
+|------|------|
+| **准备清单模板** | 投递详情「填充准备清单」；仅空清单时写入 |
+| **复盘框架** | 「新增复盘（带模板）」预填轮次、问题、自评、改进章节 |
+
+### 推荐使用流程
+
+1. 创建投递 → 详情页点击 **填充准备清单**
+2. 面试后点击 **新增复盘（带模板）** → 在预填框架上补充实际内容
+3. 保存复盘 → 详情页查看历史记录
+
+### 相关 commit（Task 14–16）
+
+```
+feat(interview): add interview template service and java-backend pack
+feat(application): add prep checklist template fill on detail page
+feat(interview): prefill debrief form from template + web tests
+```
+
+设计背景见 [`docs/superpowers/specs/2026-07-12-interview-template-design.md`](docs/superpowers/specs/2026-07-12-interview-template-design.md)。
+
 ## 数据存储
 
 H2 文件数据库位于 `./data/offerflow.*`。删除 `data/` 目录可重置全部数据。
@@ -151,7 +178,7 @@ Java 17 · Spring Boot 3.3 · Thymeleaf · Spring Data JPA · H2 · Gradle
 
 ## 后续规划
 
-- Phase 3：面经模板题单（按岗位类型）
+- 更多面试模板包（前端、Go 等）
 - 更多 seed 包（金融、外企等）+ 导入时选择 seed
 - 用户账号 + MySQL 云同步
 - 移动端 App

@@ -44,6 +44,7 @@
   - 用 Waza **`/think`** 规划 **Phase 2（公司档案库 A4）**：独立 `Company` 实体 + 公司库 Web + 投递关联（Task 8–10）
   - 实现目标公司档案：官网/招聘页/内推信息/面经外链；投递表单可选公司或手动输入；详情页展示档案卡片
   - **Phase 4（seed + 搜索）**：编写 `2026-07-12-company-seed-design.md`；实现 `CompanySeedService` + 18 家互联网 seed JSON；列表页名称搜索与「导入 seed」按钮（Task 11–13）
+  - **Phase 3（面经/准备模板）**：`2026-07-12-interview-template-design.md`；Java 后端 prep + debrief seed；投递详情填充清单 + 带模板新增复盘（Task 14–16）
 
 ---
 

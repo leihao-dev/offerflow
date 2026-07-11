@@ -4,7 +4,9 @@ import com.offerflow.dto.InterviewNoteForm;
 import com.offerflow.model.InterviewNote;
 import com.offerflow.model.JobApplication;
 import com.offerflow.service.InterviewNoteService;
+import com.offerflow.service.InterviewTemplateService;
 import com.offerflow.service.JobApplicationService;
+import com.offerflow.service.UnknownInterviewTemplateException;
 import com.offerflow.web.FlashMessages;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -21,17 +24,35 @@ public class InterviewController {
 
     private final InterviewNoteService interviewNoteService;
     private final JobApplicationService applicationService;
+    private final InterviewTemplateService interviewTemplateService;
 
-    public InterviewController(InterviewNoteService interviewNoteService, JobApplicationService applicationService) {
+    public InterviewController(
+            InterviewNoteService interviewNoteService,
+            JobApplicationService applicationService,
+            InterviewTemplateService interviewTemplateService) {
         this.interviewNoteService = interviewNoteService;
         this.applicationService = applicationService;
+        this.interviewTemplateService = interviewTemplateService;
     }
 
     @GetMapping("/applications/{applicationId}/interviews/new")
-    public String createForm(@PathVariable Long applicationId, Model model) {
+    public String createForm(
+            @PathVariable Long applicationId,
+            @RequestParam(required = false) String template,
+            Model model,
+            RedirectAttributes redirectAttributes) {
         JobApplication application = applicationService.requireApplication(applicationId);
         InterviewNoteForm form = new InterviewNoteForm();
         form.setApplicationId(applicationId);
+        if (template != null && !template.isBlank()) {
+            try {
+                interviewTemplateService.applyDebriefTemplate(form, template);
+                model.addAttribute("templateLoaded", true);
+            } catch (UnknownInterviewTemplateException ex) {
+                redirectAttributes.addFlashAttribute(FlashMessages.ERROR, "模板不存在：" + template);
+                return "redirect:/applications/" + applicationId;
+            }
+        }
         model.addAttribute("form", form);
         model.addAttribute("jobApplication", application);
         model.addAttribute("pageTitle", "新增面试复盘");
