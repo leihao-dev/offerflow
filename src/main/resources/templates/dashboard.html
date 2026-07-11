@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>仪表盘 · OfferFlow</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header>
+    <nav>
+        <a class="brand" th:href="@{/}">OfferFlow</a>
+        <a th:href="@{/dashboard}">仪表盘</a>
+        <a th:href="@{/applications}">投递列表</a>
+        <a class="btn btn-primary" th:href="@{/applications/new}">+ 新增投递</a>
+    </nav>
+</header>
+<main class="container">
+    <h1>求职仪表盘</h1>
+    <p class="muted">一眼看清投递进度、本周面试与待跟进事项。</p>
+
+    <div class="grid-3">
+        <div class="card">
+            <div class="stat-value" th:text="${dashboard.activeCount()}">0</div>
+            <div class="stat-label">进行中投递</div>
+        </div>
+        <div class="card">
+            <div class="stat-value" th:text="${dashboard.interviewsThisWeek()}">0</div>
+            <div class="stat-label">本周面试</div>
+        </div>
+        <div class="card">
+            <div class="stat-value" th:text="${dashboard.overdueCount()}">0</div>
+            <div class="stat-label">逾期未跟进</div>
+        </div>
+    </div>
+
+    <div class="card" th:if="${dashboard.overdueApplications().isEmpty()}">
+        <p>暂无逾期跟进，保持节奏 👍</p>
+    </div>
+
+    <div class="card" th:unless="${dashboard.overdueApplications().isEmpty()}">
+        <h2>待跟进</h2>
+        <table>
+            <thead>
+            <tr><th>公司</th><th>岗位</th><th>阶段</th><th>跟进日</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="app : ${dashboard.overdueApplications()}">
+                <td th:text="${app.companyName}">公司</td>
+                <td th:text="${app.positionTitle}">岗位</td>
+                <td><span class="badge" th:text="${stageLabels[app.stage]}">阶段</span></td>
+                <td th:text="${app.nextFollowUpAt}">日期</td>
+                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">查看</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>最近更新</h2>
+        <table th:if="${!dashboard.recentApplications().isEmpty()}">
+            <thead>
+            <tr><th>公司</th><th>岗位</th><th>阶段</th><th>更新于</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="app : ${dashboard.recentApplications()}">
+                <td><a th:href="@{/applications/{id}(id=${app.id})}" th:text="${app.companyName}">公司</a></td>
+                <td th:text="${app.positionTitle}">岗位</td>
+                <td><span class="badge" th:text="${stageLabels[app.stage]}">阶段</span></td>
+                <td th:text="${#temporals.format(app.updatedAt, 'yyyy-MM-dd HH:mm')}">时间</td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${dashboard.recentApplications().isEmpty()}" class="muted">
+            还没有投递记录，<a th:href="@{/applications/new}">添加第一条</a>。
+        </p>
+    </div>
+</main>
+</body>
+</html>
