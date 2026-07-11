@@ -1,0 +1,128 @@
+[
+  {
+    "name": "字节跳动",
+    "industry": "互联网",
+    "websiteUrl": "https://www.bytedance.com",
+    "careersUrl": "https://jobs.bytedance.com",
+    "referralNotes": "官网社招/校招 + 员工内推；内推码请在导入后自行填写"
+  },
+  {
+    "name": "阿里巴巴",
+    "industry": "互联网",
+    "websiteUrl": "https://www.alibaba.com",
+    "careersUrl": "https://talent.alibaba.com",
+    "referralNotes": "集团招聘官网；内推信息请在导入后自行填写"
+  },
+  {
+    "name": "腾讯",
+    "industry": "互联网",
+    "websiteUrl": "https://www.tencent.com",
+    "careersUrl": "https://careers.tencent.com",
+    "referralNotes": "腾讯招聘官网；部分岗位支持内推"
+  },
+  {
+    "name": "美团",
+    "industry": "互联网",
+    "websiteUrl": "https://www.meituan.com",
+    "careersUrl": "https://zhaopin.meituan.com",
+    "referralNotes": "美团招聘官网"
+  },
+  {
+    "name": "京东",
+    "industry": "互联网",
+    "websiteUrl": "https://www.jd.com",
+    "careersUrl": "https://zhaopin.jd.com",
+    "referralNotes": "京东招聘官网"
+  },
+  {
+    "name": "百度",
+    "industry": "互联网",
+    "websiteUrl": "https://www.baidu.com",
+    "careersUrl": "https://talent.baidu.com",
+    "referralNotes": "百度招聘官网"
+  },
+  {
+    "name": "网易",
+    "industry": "互联网",
+    "websiteUrl": "https://www.163.com",
+    "careersUrl": "https://campus.163.com",
+    "referralNotes": "网易招聘；游戏/互联网岗位较多"
+  },
+  {
+    "name": "小米",
+    "industry": "互联网",
+    "websiteUrl": "https://www.mi.com",
+    "careersUrl": "https://hr.xiaomi.com",
+    "referralNotes": "小米招聘官网"
+  },
+  {
+    "name": "华为",
+    "industry": "互联网",
+    "websiteUrl": "https://www.huawei.com",
+    "careersUrl": "https://career.huawei.com",
+    "referralNotes": "华为职业与发展官网"
+  },
+  {
+    "name": "拼多多",
+    "industry": "互联网",
+    "websiteUrl": "https://www.pinduoduo.com",
+    "careersUrl": "https://careers.pinduoduo.com",
+    "referralNotes": "拼多多招聘官网"
+  },
+  {
+    "name": "快手",
+    "industry": "互联网",
+    "websiteUrl": "https://www.kuaishou.com",
+    "careersUrl": "https://zhaopin.kuaishou.com",
+    "referralNotes": "快手招聘官网"
+  },
+  {
+    "name": "小红书",
+    "industry": "互联网",
+    "websiteUrl": "https://www.xiaohongshu.com",
+    "careersUrl": "https://job.xiaohongshu.com",
+    "referralNotes": "小红书招聘官网"
+  },
+  {
+    "name": "哔哩哔哩",
+    "industry": "互联网",
+    "websiteUrl": "https://www.bilibili.com",
+    "careersUrl": "https://jobs.bilibili.com",
+    "referralNotes": "B站招聘官网"
+  },
+  {
+    "name": "蚂蚁集团",
+    "industry": "互联网",
+    "websiteUrl": "https://www.antgroup.com",
+    "careersUrl": "https://talent.antgroup.com",
+    "referralNotes": "蚂蚁招聘官网"
+  },
+  {
+    "name": "滴滴",
+    "industry": "互联网",
+    "websiteUrl": "https://www.didiglobal.com",
+    "careersUrl": "https://talent.didiglobal.com",
+    "referralNotes": "滴滴招聘官网"
+  },
+  {
+    "name": "携程",
+    "industry": "互联网",
+    "websiteUrl": "https://www.ctrip.com",
+    "careersUrl": "https://job.ctrip.com",
+    "referralNotes": "携程招聘官网"
+  },
+  {
+    "name": "Shopee",
+    "industry": "互联网",
+    "websiteUrl": "https://shopee.cn",
+    "careersUrl": "https://careers.shopee.cn",
+    "referralNotes": "虾皮招聘；东南亚业务，部分 Java 后端岗"
+  },
+  {
+    "name": "米哈游",
+    "industry": "互联网",
+    "websiteUrl": "https://www.mihoyo.com",
+    "careersUrl": "https://www.mihoyo.com/careers",
+    "referralNotes": "米哈游招聘；游戏后端岗位"
+  }
+]

@@ -1,0 +1,84 @@
+package com.offerflow.service;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.offerflow.dto.CompanyForm;
+import com.offerflow.dto.CompanySeedEntry;
+import com.offerflow.dto.SeedImportResult;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
+public class CompanySeedService {
+
+    public static final String JAVA_BACKEND_INTERNET = "java-backend-internet";
+
+    private static final Map<String, String> SEED_RESOURCES = Map.of(
+            JAVA_BACKEND_INTERNET, "seeds/java-backend-internet.json");
+
+    private final CompanyService companyService;
+    private final ObjectMapper objectMapper;
+
+    public CompanySeedService(CompanyService companyService, ObjectMapper objectMapper) {
+        this.companyService = companyService;
+        this.objectMapper = objectMapper;
+    }
+
+    @Transactional(readOnly = true)
+    public int countSeedEntries(String seedId) {
+        return loadEntries(resolveSeedPath(seedId)).size();
+    }
+
+    public SeedImportResult importSeed(String seedId) {
+        List<CompanySeedEntry> entries = loadEntries(resolveSeedPath(seedId));
+        int imported = 0;
+        int skipped = 0;
+
+        for (CompanySeedEntry entry : entries) {
+            if (companyService.existsByName(entry.name())) {
+                skipped++;
+                continue;
+            }
+            companyService.create(toForm(entry));
+            imported++;
+        }
+
+        return new SeedImportResult(imported, skipped, entries.size());
+    }
+
+    private String resolveSeedPath(String seedId) {
+        String resourcePath = SEED_RESOURCES.get(seedId);
+        if (resourcePath == null) {
+            throw new UnknownCompanySeedException(seedId);
+        }
+        return resourcePath;
+    }
+
+    private List<CompanySeedEntry> loadEntries(String resourcePath) {
+        ClassPathResource resource = new ClassPathResource(resourcePath);
+        if (!resource.exists()) {
+            throw new IllegalStateException("Seed resource missing: " + resourcePath);
+        }
+        try (InputStream input = resource.getInputStream()) {
+            return objectMapper.readValue(input, new TypeReference<List<CompanySeedEntry>>() {});
+        } catch (IOException ex) {
+            throw new IllegalStateException("Failed to read seed resource: " + resourcePath, ex);
+        }
+    }
+
+    private CompanyForm toForm(CompanySeedEntry entry) {
+        CompanyForm form = new CompanyForm();
+        form.setName(entry.name());
+        form.setIndustry(entry.industry());
+        form.setWebsiteUrl(entry.websiteUrl());
+        form.setCareersUrl(entry.careersUrl());
+        form.setReferralNotes(entry.referralNotes());
+        return form;
+    }
+}
