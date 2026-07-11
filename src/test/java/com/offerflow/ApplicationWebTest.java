@@ -125,6 +125,22 @@ class ApplicationWebTest {
     }
 
     @Test
+    void createWithManualNameMatchingDossierShowsHint() throws Exception {
+        mockMvc.perform(post("/companies")
+                        .param("name", "美团")
+                        .param("industry", "互联网"))
+                .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(post("/applications")
+                        .param("companyName", "美团")
+                        .param("positionTitle", "Java")
+                        .param("stage", "APPLIED")
+                        .param("appliedAt", "2026-07-12"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute(FlashMessages.SUCCESS, containsString("已存在公司档案")));
+    }
+
+    @Test
     void listSearchByCompanyName() throws Exception {
         mockMvc.perform(post("/applications")
                         .param("companyName", "美团")

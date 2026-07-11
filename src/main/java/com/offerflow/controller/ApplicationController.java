@@ -83,7 +83,7 @@ public class ApplicationController {
             return "applications/form";
         }
         JobApplication saved = applicationService.create(form);
-        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "投递记录已创建。");
+        addSuccessFlashWithDossierHint(form, redirectAttributes, "投递记录已创建。");
         return "redirect:/applications/" + saved.getId();
     }
 
@@ -148,7 +148,7 @@ public class ApplicationController {
             return "applications/form";
         }
         applicationService.update(id, form);
-        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "投递记录已更新。");
+        addSuccessFlashWithDossierHint(form, redirectAttributes, "投递记录已更新。");
         return "redirect:/applications/" + id;
     }
 
@@ -175,6 +175,22 @@ public class ApplicationController {
         model.addAttribute("stageLabels", StageLabels.all());
         model.addAttribute("companies", companyService.findAll(Optional.empty()));
         model.addAttribute("pageTitle", pageTitle);
+    }
+
+    private void addSuccessFlashWithDossierHint(
+            ApplicationForm form, RedirectAttributes redirectAttributes, String baseMessage) {
+        if (form.getCompanyId() != null) {
+            redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, baseMessage);
+            return;
+        }
+        String name = form.getCompanyName() != null ? form.getCompanyName().trim() : "";
+        if (!name.isEmpty() && companyService.existsByName(name)) {
+            redirectAttributes.addFlashAttribute(
+                    FlashMessages.SUCCESS,
+                    "投递已保存。已存在公司档案「" + name + "」，下次可从下拉选择关联。");
+            return;
+        }
+        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, baseMessage);
     }
 
     private ApplicationForm toForm(JobApplication application) {
