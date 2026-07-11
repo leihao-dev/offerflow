@@ -70,6 +70,11 @@ public class CompanyService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public boolean existsByName(String name) {
+        return companyRepository.existsByNameIgnoreCase(name);
+    }
+
     public void delete(Long id) {
         if (!companyRepository.existsById(id)) {
             throw new CompanyNotFoundException(id);
