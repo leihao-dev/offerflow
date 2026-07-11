@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${pageTitle + ' · OfferFlow'}">面试复盘</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header>
+    <nav>
+        <a class="brand" th:href="@{/}">OfferFlow</a>
+        <a th:href="@{/}">首页</a>
+        <a th:href="@{/applications}">投递列表</a>
+    </nav>
+</header>
+<main class="container">
+    <h1 th:text="${pageTitle}">面试复盘</h1>
+    <p class="muted" th:text="${application.companyName + ' · ' + application.positionTitle}">岗位</p>
+
+    <div class="card">
+        <form th:action="${form.id != null} ? @{/interviews/{id}(id=${form.id})} : @{/applications/{aid}/interviews(aid=${application.id})}"
+              method="post" th:object="${form}">
+            <input type="hidden" th:field="*{id}"/>
+            <input type="hidden" th:field="*{applicationId}"/>
+
+            <label for="interviewDate">面试日期 *</label>
+            <input id="interviewDate" type="date" th:field="*{interviewDate}"/>
+            <div class="error" th:if="${#fields.hasErrors('interviewDate')}" th:errors="*{interviewDate}"></div>
+
+            <label for="roundLabel">轮次</label>
+            <input id="roundLabel" th:field="*{roundLabel}" placeholder="一面 / HR面 / 终面"/>
+
+            <label for="questionsAsked">被问到的问题</label>
+            <textarea id="questionsAsked" th:field="*{questionsAsked}"></textarea>
+
+            <label for="selfAssessment">自我评价</label>
+            <textarea id="selfAssessment" th:field="*{selfAssessment}"></textarea>
+
+            <label for="improvements">待改进项</label>
+            <textarea id="improvements" th:field="*{improvements}"></textarea>
+
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">保存</button>
+                <a class="btn" th:href="@{/applications/{id}(id=${application.id})}">返回</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
