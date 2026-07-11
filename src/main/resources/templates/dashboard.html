@@ -29,6 +29,24 @@
         </div>
     </div>
 
+    <div class="card" th:unless="${dashboard.weekInterviews().isEmpty()}">
+        <h2>本周面试</h2>
+        <table>
+            <thead>
+            <tr><th>日期</th><th>公司</th><th>岗位</th><th>轮次</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${dashboard.weekInterviews()}">
+                <td th:text="${item.interviewDate()}">日期</td>
+                <td th:text="${item.companyName()}">公司</td>
+                <td th:text="${item.positionTitle()}">岗位</td>
+                <td th:text="${item.roundLabel() != null ? item.roundLabel() : '-'}">轮次</td>
+                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${item.applicationId()})}">查看</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="card" th:unless="${dashboard.overdueApplications().isEmpty()}">
         <h2>待跟进</h2>
         <table>

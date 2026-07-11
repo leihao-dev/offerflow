@@ -8,5 +8,6 @@ public record DashboardView(
         long interviewsThisWeek,
         long overdueCount,
         List<JobApplication> overdueApplications,
-        List<JobApplication> recentApplications) {
+        List<JobApplication> recentApplications,
+        List<InterviewWeekItem> weekInterviews) {
 }
