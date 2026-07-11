@@ -1,0 +1,28 @@
+package com.offerflow.repository;
+
+import com.offerflow.model.ApplicationStage;
+import com.offerflow.model.JobApplication;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
+
+    @Query("SELECT a FROM JobApplication a LEFT JOIN FETCH a.interviewNotes WHERE a.id = :id")
+    Optional<JobApplication> findByIdWithNotes(@Param("id") Long id);
+
+    List<JobApplication> findByStageOrderByUpdatedAtDesc(ApplicationStage stage);
+
+    List<JobApplication> findAllByOrderByUpdatedAtDesc();
+
+    long countByStageNotIn(Collection<ApplicationStage> terminalStages);
+
+    List<JobApplication> findByNextFollowUpAtBeforeAndStageNotIn(
+            LocalDate date, Collection<ApplicationStage> terminalStages);
+
+    List<JobApplication> findTop5ByOrderByUpdatedAtDesc();
+}
