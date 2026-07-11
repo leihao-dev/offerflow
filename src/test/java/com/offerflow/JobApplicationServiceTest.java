@@ -36,6 +36,22 @@ class JobApplicationServiceTest {
     }
 
     @Test
+    void requireApplicationLoadsPersistedFields() {
+        ApplicationForm form = new ApplicationForm();
+        form.setCompanyName("Acme");
+        form.setPositionTitle("Dev");
+        form.setStage(ApplicationStage.APPLIED);
+        form.setAppliedAt(LocalDate.of(2026, 7, 10));
+
+        var saved = service.create(form);
+        var loaded = service.requireApplication(saved.getId());
+
+        assertEquals("Acme", loaded.getCompanyName());
+        assertEquals("Dev", loaded.getPositionTitle());
+        assertEquals(ApplicationStage.APPLIED, loaded.getStage());
+    }
+
+    @Test
     void countsActiveExcludingTerminalStages() {
         ApplicationForm active = new ApplicationForm();
         active.setCompanyName("Active Co");

@@ -39,7 +39,7 @@
             <tr th:each="app : ${dashboard.overdueApplications()}">
                 <td th:text="${app.companyName}">公司</td>
                 <td th:text="${app.positionTitle}">岗位</td>
-                <td><span class="badge" th:text="${stageLabels[app.stage]}">阶段</span></td>
+                <td><span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span></td>
                 <td th:text="${app.nextFollowUpAt}">日期</td>
                 <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">查看</a></td>
             </tr>
@@ -57,7 +57,7 @@
             <tr th:each="app : ${dashboard.recentApplications()}">
                 <td><a th:href="@{/applications/{id}(id=${app.id})}" th:text="${app.companyName}">公司</a></td>
                 <td th:text="${app.positionTitle}">岗位</td>
-                <td><span class="badge" th:text="${stageLabels[app.stage]}">阶段</span></td>
+                <td><span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span></td>
                 <td th:text="${#temporals.format(app.updatedAt, 'yyyy-MM-dd HH:mm')}">时间</td>
             </tr>
             </tbody>

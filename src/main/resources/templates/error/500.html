@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>服务器错误 · OfferFlow</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header th:replace="~{fragments/nav :: nav('')}"></header>
+<main class="container">
+    <div class="card">
+        <h1>出了点问题</h1>
+        <p th:text="${message} ?: '服务器处理请求时发生错误，请稍后重试。'">服务器错误</p>
+        <div class="actions">
+            <a class="btn btn-primary" th:href="@{/dashboard}">返回仪表盘</a>
+            <a class="btn" th:href="@{/applications}">投递列表</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

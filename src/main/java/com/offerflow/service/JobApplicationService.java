@@ -77,7 +77,7 @@ public class JobApplicationService {
         application.setCompanyName(form.getCompanyName());
         application.setPositionTitle(form.getPositionTitle());
         application.setSource(form.getSource());
-        application.setStage(form.getStage());
+        application.setStage(form.getStage() != null ? form.getStage() : ApplicationStage.APPLIED);
         application.setAppliedAt(form.getAppliedAt());
         application.setNextFollowUpAt(form.getNextFollowUpAt());
         application.setSalaryRange(form.getSalaryRange());

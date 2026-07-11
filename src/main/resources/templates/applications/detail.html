@@ -3,69 +3,69 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title th:text="${application.companyName + ' · OfferFlow'}">详情</title>
+    <title th:text="${jobApplication.companyName + ' · OfferFlow'}">详情</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <header th:replace="~{fragments/nav :: nav('applications')}"></header>
 <main class="container">
     <div th:replace="~{fragments/messages :: flash}"></div>
-    <h1 th:text="${application.companyName + ' - ' + application.positionTitle}">详情</h1>
+    <h1 th:text="${jobApplication.companyName + ' - ' + jobApplication.positionTitle}">详情</h1>
     <p>
-        <span class="badge" th:text="${stageLabels[application.stage]}">阶段</span>
-        <span class="muted" th:if="${application.source != null}" th:text="' · ' + ${application.source}"></span>
+        <span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(jobApplication.stage)}">阶段</span>
+        <span class="muted" th:if="${jobApplication.source != null}" th:text="' · ' + ${jobApplication.source}"></span>
     </p>
 
     <div class="card">
         <h2>快速更新阶段</h2>
         <div class="stage-actions">
-            <form th:each="s : ${stages}" th:action="@{/applications/{id}/stage(id=${application.id})}" method="post" style="display:inline">
+            <form th:each="s : ${stages}" th:action="@{/applications/{id}/stage(id=${jobApplication.id})}" method="post" style="display:inline">
                 <input type="hidden" name="stage" th:value="${s}"/>
-                <button class="btn btn-sm" th:classappend="${application.stage == s} ? 'btn-primary' : ''" type="submit"
-                        th:text="${stageLabels[s]}">阶段</button>
+                <button class="btn btn-sm" th:classappend="${jobApplication.stage == s} ? 'btn-primary' : ''" type="submit"
+                        th:text="${T(com.offerflow.web.StageLabels).label(s)}">阶段</button>
             </form>
         </div>
     </div>
 
     <div class="card">
         <h2>基本信息</h2>
-        <p><strong>投递日：</strong><span th:text="${application.appliedAt}"></span></p>
-        <p><strong>下次跟进：</strong><span th:text="${application.nextFollowUpAt != null ? application.nextFollowUpAt : '未设置'}"></span></p>
-        <p th:if="${application.salaryRange != null}"><strong>薪资：</strong><span th:text="${application.salaryRange}"></span></p>
-        <p th:if="${application.prepDone}"><strong>准备状态：</strong>已完成</p>
+        <p><strong>投递日：</strong><span th:text="${jobApplication.appliedAt}"></span></p>
+        <p><strong>下次跟进：</strong><span th:text="${jobApplication.nextFollowUpAt != null ? jobApplication.nextFollowUpAt : '未设置'}"></span></p>
+        <p th:if="${jobApplication.salaryRange != null}"><strong>薪资：</strong><span th:text="${jobApplication.salaryRange}"></span></p>
+        <p th:if="${jobApplication.prepDone}"><strong>准备状态：</strong>已完成</p>
         <div class="actions">
-            <a class="btn" th:href="@{/applications/{id}/edit(id=${application.id})}">编辑</a>
-            <form th:action="@{/applications/{id}/delete(id=${application.id})}" method="post" style="display:inline"
+            <a class="btn" th:href="@{/applications/{id}/edit(id=${jobApplication.id})}">编辑</a>
+            <form th:action="@{/applications/{id}/delete(id=${jobApplication.id})}" method="post" style="display:inline"
                   onsubmit="return confirm('确定删除这条投递及所有面试记录？');">
                 <button class="btn btn-danger" type="submit">删除</button>
             </form>
         </div>
     </div>
 
-    <div class="card" th:if="${application.jdContent != null and !application.jdContent.isBlank()}">
+    <div class="card" th:if="${jobApplication.jdContent != null and !jobApplication.jdContent.isBlank()}">
         <h2>JD</h2>
-        <pre th:text="${application.jdContent}" style="white-space:pre-wrap;font-family:inherit;"></pre>
+        <pre th:text="${jobApplication.jdContent}" style="white-space:pre-wrap;font-family:inherit;"></pre>
     </div>
 
-    <div class="card" th:if="${application.companyNotes != null and !application.companyNotes.isBlank()}">
+    <div class="card" th:if="${jobApplication.companyNotes != null and !jobApplication.companyNotes.isBlank()}">
         <h2>公司笔记</h2>
-        <pre th:text="${application.companyNotes}" style="white-space:pre-wrap;font-family:inherit;"></pre>
+        <pre th:text="${jobApplication.companyNotes}" style="white-space:pre-wrap;font-family:inherit;"></pre>
     </div>
 
-    <div class="card" th:if="${application.prepChecklist != null and !application.prepChecklist.isBlank()}">
+    <div class="card" th:if="${jobApplication.prepChecklist != null and !jobApplication.prepChecklist.isBlank()}">
         <h2>准备清单</h2>
-        <pre th:text="${application.prepChecklist}" style="white-space:pre-wrap;font-family:inherit;"></pre>
+        <pre th:text="${jobApplication.prepChecklist}" style="white-space:pre-wrap;font-family:inherit;"></pre>
     </div>
 
     <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;">
             <h2>面试复盘</h2>
-            <a class="btn btn-primary btn-sm" th:href="@{/applications/{id}/interviews/new(id=${application.id})}">+ 新增复盘</a>
+            <a class="btn btn-primary btn-sm" th:href="@{/applications/{id}/interviews/new(id=${jobApplication.id})}">+ 新增复盘</a>
         </div>
 
-        <div th:if="${application.interviewNotes.isEmpty()}" class="muted">还没有面试记录。</div>
+        <div th:if="${#lists.isEmpty(jobApplication.interviewNotes)}" class="muted">还没有面试记录。</div>
 
-        <div th:each="note : ${application.interviewNotes}" class="card" style="margin-top:12px;">
+        <div th:each="note : ${jobApplication.interviewNotes}" class="card" style="margin-top:12px;">
             <h3 th:text="${note.interviewDate + (note.roundLabel != null ? ' · ' + note.roundLabel : '')}">面试</h3>
             <p th:if="${note.questionsAsked != null}"><strong>问题：</strong><br/><span th:text="${note.questionsAsked}"></span></p>
             <p th:if="${note.selfAssessment != null}"><strong>自评：</strong><br/><span th:text="${note.selfAssessment}"></span></p>

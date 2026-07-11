@@ -68,7 +68,7 @@ public class ApplicationController {
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
         JobApplication application = applicationService.requireApplication(id);
-        model.addAttribute("application", application);
+        model.addAttribute("jobApplication", application);
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
         return "applications/detail";

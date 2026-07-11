@@ -33,7 +33,7 @@ public class InterviewController {
         InterviewNoteForm form = new InterviewNoteForm();
         form.setApplicationId(applicationId);
         model.addAttribute("form", form);
-        model.addAttribute("application", application);
+        model.addAttribute("jobApplication", application);
         model.addAttribute("pageTitle", "新增面试复盘");
         return "interviews/form";
     }
@@ -47,7 +47,7 @@ public class InterviewController {
             RedirectAttributes redirectAttributes) {
         form.setApplicationId(applicationId);
         if (result.hasErrors()) {
-            model.addAttribute("application", applicationService.requireApplication(applicationId));
+            model.addAttribute("jobApplication", applicationService.requireApplication(applicationId));
             model.addAttribute("pageTitle", "新增面试复盘");
             return "interviews/form";
         }
@@ -61,7 +61,7 @@ public class InterviewController {
         InterviewNote note = interviewNoteService.requireNote(id);
         InterviewNoteForm form = toForm(note);
         model.addAttribute("form", form);
-        model.addAttribute("application", note.getApplication());
+        model.addAttribute("jobApplication", note.getApplication());
         model.addAttribute("pageTitle", "编辑面试复盘");
         return "interviews/form";
     }
@@ -76,7 +76,7 @@ public class InterviewController {
         InterviewNote note = interviewNoteService.requireNote(id);
         form.setApplicationId(note.getApplication().getId());
         if (result.hasErrors()) {
-            model.addAttribute("application", note.getApplication());
+            model.addAttribute("jobApplication", note.getApplication());
             model.addAttribute("pageTitle", "编辑面试复盘");
             return "interviews/form";
         }

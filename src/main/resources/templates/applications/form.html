@@ -30,7 +30,7 @@
 
             <label for="stage">当前阶段 *</label>
             <select id="stage" th:field="*{stage}">
-                <option th:each="s : ${stages}" th:value="${s}" th:text="${stageLabels[s]}"></option>
+                <option th:each="s : ${stages}" th:value="${s}" th:text="${T(com.offerflow.web.StageLabels).label(s)}"></option>
             </select>
             <div class="error" th:if="${#fields.hasErrors('stage')}" th:errors="*{stage}"></div>
 

@@ -21,6 +21,9 @@ public final class StageLabels {
     private StageLabels() {}
 
     public static String label(ApplicationStage stage) {
+        if (stage == null) {
+            return "未设置";
+        }
         return LABELS.getOrDefault(stage, stage.name());
     }
 

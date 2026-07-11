@@ -1,7 +1,7 @@
 # OfferFlow Bugfix Round 2 Design Spec
 
 **Date:** 2026-07-11  
-**Status:** Draft — pending Ray review  
+**Status:** Approved (2026-07-11)  
 **Author:** Brainstorming session with Ray  
 **Scope:** P0 + P1 (stage labels, detail page stability, web smoke tests, 500 error page)
 

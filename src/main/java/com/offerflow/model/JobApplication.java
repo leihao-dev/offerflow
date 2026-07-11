@@ -186,6 +186,9 @@ public class JobApplication {
     }
 
     public List<InterviewNote> getInterviewNotes() {
+        if (interviewNotes == null) {
+            interviewNotes = new ArrayList<>();
+        }
         return interviewNotes;
     }
 

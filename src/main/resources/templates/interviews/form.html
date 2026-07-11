@@ -11,10 +11,10 @@
 <main class="container">
     <div th:replace="~{fragments/messages :: flash}"></div>
     <h1 th:text="${pageTitle}">面试复盘</h1>
-    <p class="muted" th:text="${application.companyName + ' · ' + application.positionTitle}">岗位</p>
+    <p class="muted" th:text="${jobApplication.companyName + ' · ' + jobApplication.positionTitle}">岗位</p>
 
     <div class="card">
-        <form th:action="${form.id != null} ? @{/interviews/{id}(id=${form.id})} : @{/applications/{aid}/interviews(aid=${application.id})}"
+        <form th:action="${form.id != null} ? @{/interviews/{id}(id=${form.id})} : @{/applications/{aid}/interviews(aid=${jobApplication.id})}"
               method="post" th:object="${form}">
             <input type="hidden" th:field="*{id}"/>
             <input type="hidden" th:field="*{applicationId}"/>
@@ -37,7 +37,7 @@
 
             <div class="actions">
                 <button class="btn btn-primary" type="submit">保存</button>
-                <a class="btn" th:href="@{/applications/{id}(id=${application.id})}">返回</a>
+                <a class="btn" th:href="@{/applications/{id}(id=${jobApplication.id})}">返回</a>
             </div>
         </form>
     </div>
