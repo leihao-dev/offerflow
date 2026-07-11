@@ -43,6 +43,7 @@ public class CompanyController {
         model.addAttribute("industries", companyService.findDistinctIndustries());
         model.addAttribute("selectedIndustry", industry);
         model.addAttribute("searchQuery", q);
+        model.addAttribute("seedPacks", companySeedService.listAvailableSeeds());
         return "companies/list";
     }
 

@@ -17,9 +17,14 @@
     <p class="muted">维护官网、招聘页与内推信息，投递时可重复引用同一份档案。</p>
 
     <div class="card" style="margin-bottom:16px;">
-        <h2 style="margin:0 0 6px;font-size:1rem;">Java 后端 · 互联网 seed</h2>
-        <p class="muted" style="margin:0 0 12px;">约 18 家公司，含招聘页链接；已存在的公司将跳过。</p>
-        <form method="post" th:action="@{/companies/import-seed(seed='java-backend-internet')}">
+        <h2 style="margin:0 0 6px;font-size:1rem;">导入公司 seed</h2>
+        <p class="muted" style="margin:0 0 12px;">已存在的公司将跳过，不覆盖已有档案。</p>
+        <form class="actions" method="post" th:action="@{/companies/import-seed}">
+            <select name="seed" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;">
+                <option th:each="pack : ${seedPacks}"
+                        th:value="${pack.id()}"
+                        th:text="${pack.title() + ' (' + pack.entryCount() + ')'}">seed</option>
+            </select>
             <button class="btn btn-primary btn-sm" type="submit">导入 seed</button>
         </form>
     </div>

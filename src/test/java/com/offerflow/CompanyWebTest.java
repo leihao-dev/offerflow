@@ -75,8 +75,24 @@ class CompanyWebTest {
 
         mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Java 后端 · 互联网 seed")))
+                .andExpect(content().string(containsString("导入公司 seed")))
                 .andExpect(content().string(containsString("导入 seed")));
+    }
+
+    @Test
+    void listShowsSeedSelector() throws Exception {
+        mockMvc.perform(get("/companies"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("导入公司 seed")))
+                .andExpect(content().string(containsString("金融 / 金融科技")))
+                .andExpect(content().string(containsString("外企科技")));
+    }
+
+    @Test
+    void importFinanceTechSeed() throws Exception {
+        mockMvc.perform(post("/companies/import-seed").param("seed", CompanySeedService.FINANCE_TECH))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute(FlashMessages.SUCCESS, containsString("导入")));
     }
 
     @Test
