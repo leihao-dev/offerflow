@@ -1,6 +1,7 @@
 package com.offerflow.web;
 
 import com.offerflow.service.ApplicationNotFoundException;
+import com.offerflow.service.CompanyNotFoundException;
 import com.offerflow.service.InterviewNoteNotFoundException;
 import org.hibernate.LazyInitializationException;
 import org.slf4j.Logger;
@@ -21,6 +22,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleApplicationNotFound(ApplicationNotFoundException ex, Model model) {
         model.addAttribute("message", "未找到该投递记录，可能已被删除。");
+        return "error/404";
+    }
+
+    @ExceptionHandler(CompanyNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleCompanyNotFound(CompanyNotFoundException ex, Model model) {
+        model.addAttribute("message", "未找到该公司档案，可能已被删除。");
         return "error/404";
     }
 

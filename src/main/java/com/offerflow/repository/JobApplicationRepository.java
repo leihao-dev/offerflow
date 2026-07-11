@@ -25,4 +25,6 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
             LocalDate date, Collection<ApplicationStage> terminalStages);
 
     List<JobApplication> findTop5ByOrderByUpdatedAtDesc();
+
+    long countByCompanyId(Long companyId);
 }
