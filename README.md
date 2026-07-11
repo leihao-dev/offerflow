@@ -47,7 +47,7 @@ cd offerflow
 | `/applications` | 投递列表 + 阶段筛选 |
 | `/applications/new` | 新增投递（可选公司档案或手动输入） |
 | `/applications/{id}` | 详情 + 公司档案卡片 + 面试复盘 |
-| `/companies` | 目标公司列表 + 行业筛选 |
+| `/companies` | 目标公司列表 + 行业筛选 + 名称搜索 + seed 导入 |
 | `/companies/new` | 新增公司档案 |
 | `/companies/{id}` | 公司详情（外链、内推、关联投递） |
 | `/h2-console` | H2 数据库控制台（开发调试用） |
@@ -80,6 +80,34 @@ feat(application): link applications to company dossier
 ```
 
 设计背景见 [`docs/superpowers/specs/2026-07-11-offerflow-design.md`](docs/superpowers/specs/2026-07-11-offerflow-design.md)（长期愿景 A4 / Phase 5）及 [`docs/superpowers/specs/2026-07-11-offerflow-bugfix-round2-design.md`](docs/superpowers/specs/2026-07-11-offerflow-bugfix-round2-design.md)（Day 2 主路径修复）。
+
+## Phase 4：行业 seed 公司包 + 搜索
+
+Phase 4 在 Phase 2 公司档案库之上，解决「从零录入 15–20 家目标公司太费事」的痛点。
+
+### 功能概览
+
+| 能力 | 说明 |
+|------|------|
+| **Java 后端互联网 seed** | `src/main/resources/seeds/java-backend-internet.json`，约 18 家公司，含招聘页链接 |
+| **一键导入** | 目标公司列表页点击「导入 seed」；已存在公司按名称跳过，不覆盖用户编辑 |
+| **名称搜索** | `GET /companies?q=字节` 模糊匹配公司名，可与 `?industry=` 组合 |
+
+### 推荐使用流程
+
+1. 打开 **目标公司**，点击 **导入 seed** 快速填充互联网大厂档案
+2. 按需编辑内推码、调研笔记等个人字段
+3. 用搜索框或行业筛选定位公司，再 **新增投递** 时从下拉关联
+
+### 相关 commit（Task 11–13）
+
+```
+feat(company): add seed import service and java-backend seed data
+feat(company): add company name search on list page
+feat(company): add seed import action on company list UI
+```
+
+设计背景见 [`docs/superpowers/specs/2026-07-12-company-seed-design.md`](docs/superpowers/specs/2026-07-12-company-seed-design.md)。
 
 ## 数据存储
 
@@ -124,7 +152,7 @@ Java 17 · Spring Boot 3.3 · Thymeleaf · Spring Data JPA · H2 · Gradle
 ## 后续规划
 
 - Phase 3：面经模板题单（按岗位类型）
-- Phase 4：行业 seed 公司包（用户自策展扩展）
+- 更多 seed 包（金融、外企等）+ 导入时选择 seed
 - 用户账号 + MySQL 云同步
 - 移动端 App
 - 邮件/微信提醒逾期跟进

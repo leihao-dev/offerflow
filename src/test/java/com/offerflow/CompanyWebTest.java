@@ -1,9 +1,12 @@
 package com.offerflow;
 
+import com.offerflow.service.CompanySeedService;
+import com.offerflow.web.FlashMessages;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -62,6 +65,25 @@ class CompanyWebTest {
         mockMvc.perform(get("/dashboard"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("目标公司")));
+    }
+
+    @Test
+    void importSeedRedirectsWithFlash() throws Exception {
+        mockMvc.perform(post("/companies/import-seed").param("seed", CompanySeedService.JAVA_BACKEND_INTERNET))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute(FlashMessages.SUCCESS, containsString("导入")));
+
+        mockMvc.perform(get("/companies"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Java 后端 · 互联网 seed")))
+                .andExpect(content().string(containsString("导入 seed")));
+    }
+
+    @Test
+    void importSeedUnknownPackShowsError() throws Exception {
+        mockMvc.perform(post("/companies/import-seed").param("seed", "unknown-pack"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute(FlashMessages.ERROR, containsString("seed 包不存在")));
     }
 
     @Test

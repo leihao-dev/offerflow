@@ -1,10 +1,13 @@
 package com.offerflow.controller;
 
 import com.offerflow.dto.CompanyForm;
+import com.offerflow.dto.SeedImportResult;
 import com.offerflow.model.Company;
 import com.offerflow.service.CompanyHasApplicationsException;
+import com.offerflow.service.CompanySeedService;
 import com.offerflow.service.CompanyService;
 import com.offerflow.service.DuplicateCompanyNameException;
+import com.offerflow.service.UnknownCompanySeedException;
 import com.offerflow.web.FlashMessages;
 import jakarta.validation.Valid;
 import java.util.Optional;
@@ -24,9 +27,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final CompanySeedService companySeedService;
 
-    public CompanyController(CompanyService companyService) {
+    public CompanyController(CompanyService companyService, CompanySeedService companySeedService) {
         this.companyService = companyService;
+        this.companySeedService = companySeedService;
     }
 
     @GetMapping
@@ -39,6 +44,19 @@ public class CompanyController {
         model.addAttribute("selectedIndustry", industry);
         model.addAttribute("searchQuery", q);
         return "companies/list";
+    }
+
+    @PostMapping("/import-seed")
+    public String importSeed(@RequestParam String seed, RedirectAttributes redirectAttributes) {
+        try {
+            SeedImportResult result = companySeedService.importSeed(seed);
+            redirectAttributes.addFlashAttribute(
+                    FlashMessages.SUCCESS,
+                    "已成功导入 " + result.imported() + " 家公司，跳过 " + result.skipped() + " 家（已存在）。");
+        } catch (UnknownCompanySeedException ex) {
+            redirectAttributes.addFlashAttribute(FlashMessages.ERROR, "seed 包不存在：" + seed);
+        }
+        return "redirect:/companies";
     }
 
     @GetMapping("/new")

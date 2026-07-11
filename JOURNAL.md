@@ -43,6 +43,7 @@
   - 在 `GlobalExceptionHandlerWebTest` 补 3 条冒烟测试（列表标签 / 表单选项 / 创建→详情），`.\gradlew.bat test` 全过后再提交
   - 用 Waza **`/think`** 规划 **Phase 2（公司档案库 A4）**：独立 `Company` 实体 + 公司库 Web + 投递关联（Task 8–10）
   - 实现目标公司档案：官网/招聘页/内推信息/面经外链；投递表单可选公司或手动输入；详情页展示档案卡片
+  - **Phase 4（seed + 搜索）**：编写 `2026-07-12-company-seed-design.md`；实现 `CompanySeedService` + 18 家互联网 seed JSON；列表页名称搜索与「导入 seed」按钮（Task 11–13）
 
 ---
 
@@ -81,7 +82,7 @@
 
 | 事项 | 状态 |
 |------|------|
-| 推送远程 `origin/master` | 已完成（含 Task 8–10 + Phase 2 文档） |
+| 推送远程 `origin/master` | 待做（Phase 4 Task 11–13 本地已 commit，待 push） |
 | 录 3–5 分钟 Demo 视频 | 待做 |
 | 全站手动 QA | 待做 |
 | 按作业要求发邮件 | 待做 |
@@ -89,7 +90,7 @@
 ## 后续产品方向（Phase 3+）
 
 - 面经模板题单（按岗位类型，非 AI 生成）
-- 行业 seed 公司包（用户自策展的扩展）
+- 更多行业 seed 公司包
 - 投递导出 Markdown、仪表盘本周面试列表
 
 ---
