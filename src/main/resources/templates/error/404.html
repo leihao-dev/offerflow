@@ -7,14 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
-<header>
-    <nav>
-        <a class="brand" th:href="@{/}">OfferFlow</a>
-        <a th:href="@{/dashboard}">仪表盘</a>
-        <a th:href="@{/applications}">投递列表</a>
-        <a class="btn btn-primary" th:href="@{/applications/new}">+ 新增投递</a>
-    </nav>
-</header>
+<header th:replace="~{fragments/nav :: nav('')}"></header>
 <main class="container">
     <div class="card">
         <h1>页面未找到</h1>
