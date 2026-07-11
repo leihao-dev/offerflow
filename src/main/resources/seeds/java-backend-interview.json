@@ -1,0 +1,11 @@
+{
+  "id": "java-backend",
+  "title": "Java 后端",
+  "prepChecklist": "□ JVM：内存模型、GC 算法、OOM 排查\n□ 并发：线程池、synchronized、volatile、AQS\n□ 集合：HashMap 原理、ConcurrentHashMap\n□ Spring：IOC/AOP、Bean 生命周期、事务传播\n□ 数据库：索引、事务隔离、慢 SQL\n□ 缓存：Redis 数据结构、穿透/击穿/雪崩\n□ 消息队列：幂等、顺序、积压（如简历涉及）\n□ 网络：TCP/HTTP、HTTPS\n□ 微服务：注册发现、限流熔断（如简历涉及）\n□ 项目：亮点 2 个 + 难点 2 个 + 数据指标\n□ 算法：数组/链表/二叉树各 1 道",
+  "debrief": {
+    "roundLabel": "技术面",
+    "questionsAsked": "## 八股 / 基础\n- \n\n## 项目深挖\n- \n\n## 算法 / 手写\n- \n\n## 开放题 / 场景设计\n- ",
+    "selfAssessment": "## 答得好的\n- \n\n## 卡壳 / 不会的\n- \n\n## 整体自评（1-5 分）\n",
+    "improvements": "- 待补知识点：\n- 表达方式改进：\n- 下次模拟练习："
+  }
+}

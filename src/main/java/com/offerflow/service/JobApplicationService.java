@@ -69,6 +69,17 @@ public class JobApplicationService {
         return repository.countByStageNotIn(TERMINAL_STAGES);
     }
 
+    public boolean applyPrepChecklistIfEmpty(Long id, String checklist) {
+        JobApplication application = requireApplication(id);
+        String existing = application.getPrepChecklist();
+        if (existing != null && !existing.isBlank()) {
+            return false;
+        }
+        application.setPrepChecklist(checklist);
+        repository.save(application);
+        return true;
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new ApplicationNotFoundException(id);
