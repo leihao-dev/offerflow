@@ -85,4 +85,19 @@ class ApplicationWebTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(FlashMessages.SUCCESS, containsString("未覆盖")));
     }
+
+    @Test
+    void listSearchByCompanyName() throws Exception {
+        mockMvc.perform(post("/applications")
+                        .param("companyName", "美团")
+                        .param("positionTitle", "Java")
+                        .param("stage", "APPLIED")
+                        .param("appliedAt", "2026-07-12"))
+                .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(get("/applications").param("q", "美团"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("美团")))
+                .andExpect(content().string(containsString("type=\"search\"")));
+    }
 }

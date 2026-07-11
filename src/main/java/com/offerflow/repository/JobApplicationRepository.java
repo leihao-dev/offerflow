@@ -29,4 +29,16 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     long countByCompanyId(Long companyId);
 
     List<JobApplication> findByCompanyIdOrderByUpdatedAtDesc(Long companyId);
+
+    List<JobApplication> findByCompanyNameContainingIgnoreCaseOrPositionTitleContainingIgnoreCaseOrderByUpdatedAtDesc(
+            String companyName, String positionTitle);
+
+    @Query("""
+            SELECT a FROM JobApplication a
+            WHERE a.stage = :stage
+              AND (LOWER(a.companyName) LIKE LOWER(CONCAT('%', :q, '%'))
+                OR LOWER(a.positionTitle) LIKE LOWER(CONCAT('%', :q, '%')))
+            ORDER BY a.updatedAt DESC""")
+    List<JobApplication> searchByStageAndQuery(
+            @Param("stage") ApplicationStage stage, @Param("q") String q);
 }

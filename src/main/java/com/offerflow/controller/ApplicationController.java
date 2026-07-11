@@ -42,9 +42,14 @@ public class ApplicationController {
     }
 
     @GetMapping
-    public String list(@RequestParam(required = false) ApplicationStage stage, Model model) {
+    public String list(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) ApplicationStage stage,
+            Model model) {
         LocalDate today = LocalDate.now();
-        model.addAttribute("applications", applicationService.findAll(Optional.ofNullable(stage)));
+        model.addAttribute(
+                "applications", applicationService.search(Optional.ofNullable(q), Optional.ofNullable(stage)));
+        model.addAttribute("searchQuery", q);
         model.addAttribute("selectedStage", stage);
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());

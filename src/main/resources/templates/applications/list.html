@@ -12,11 +12,23 @@
     <div th:replace="~{fragments/messages :: flash}"></div>
     <h1>投递列表</h1>
 
+    <div class="card" style="margin-bottom:16px;">
+        <form class="actions" method="get" th:action="@{/applications}">
+            <input type="hidden" name="stage" th:if="${selectedStage != null}" th:value="${selectedStage}"/>
+            <input name="q" type="search" placeholder="按公司或岗位搜索…" th:value="${searchQuery}"
+                   style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;"/>
+            <button class="btn btn-primary btn-sm" type="submit">搜索</button>
+            <a class="btn btn-sm" th:if="${searchQuery != null and !searchQuery.isBlank()}"
+               th:href="@{/applications(stage=${selectedStage})}">清除搜索</a>
+        </form>
+    </div>
+
     <div class="actions">
-        <a class="btn btn-sm" th:classappend="${selectedStage == null} ? 'btn-primary' : ''" th:href="@{/applications}">全部</a>
+        <a class="btn btn-sm" th:classappend="${selectedStage == null} ? 'btn-primary' : ''"
+           th:href="@{/applications(q=${searchQuery})}">全部</a>
         <a class="btn btn-sm" th:each="s : ${stages}"
            th:classappend="${selectedStage == s} ? 'btn-primary' : ''"
-           th:href="@{/applications(stage=${s})}"
+           th:href="@{/applications(stage=${s}, q=${searchQuery})}"
            th:text="${T(com.offerflow.web.StageLabels).label(s)}">阶段</a>
     </div>
 
@@ -46,7 +58,11 @@
             </tr>
             </tbody>
         </table>
-        <p th:if="${applications.isEmpty()}" class="muted">暂无记录。</p>
+        <p th:if="${applications.isEmpty() and searchQuery != null and !searchQuery.isBlank()}" class="muted">
+            没有匹配「<span th:text="${searchQuery}"></span>」的投递。
+            <a th:href="@{/applications(stage=${selectedStage})}">清除搜索</a>
+        </p>
+        <p th:if="${applications.isEmpty() and (searchQuery == null or searchQuery.isBlank())}" class="muted">暂无记录。</p>
     </div>
 </main>
 </body>

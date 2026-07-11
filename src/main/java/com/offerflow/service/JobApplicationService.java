@@ -59,6 +59,18 @@ public class JobApplicationService {
     }
 
     @Transactional(readOnly = true)
+    public List<JobApplication> search(Optional<String> query, Optional<ApplicationStage> stage) {
+        String q = query.map(String::trim).filter(value -> !value.isBlank()).orElse(null);
+        if (q == null) {
+            return findAll(stage);
+        }
+        return stage.map(s -> repository.searchByStageAndQuery(s, q))
+                .orElseGet(() -> repository
+                        .findByCompanyNameContainingIgnoreCaseOrPositionTitleContainingIgnoreCaseOrderByUpdatedAtDesc(
+                                q, q));
+    }
+
+    @Transactional(readOnly = true)
     public List<JobApplication> findOverdue(LocalDate today) {
         return repository.findByNextFollowUpAtNotNullAndNextFollowUpAtLessThanEqualAndStageNotIn(
                 today, TERMINAL_STAGES);

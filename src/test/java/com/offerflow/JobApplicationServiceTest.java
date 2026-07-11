@@ -6,6 +6,7 @@ import com.offerflow.model.ApplicationStage;
 import com.offerflow.service.CompanyService;
 import com.offerflow.service.JobApplicationService;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -115,5 +116,35 @@ class JobApplicationServiceTest {
         service.create(future);
 
         assertEquals(1, service.findOverdue(today).size());
+    }
+
+    @Test
+    void searchByCompanyNamePartialMatch() {
+        service.create(sampleForm("美团", "Java 后端"));
+        service.create(sampleForm("腾讯", "Go 后端"));
+
+        var results = service.search(Optional.of("美团"), Optional.empty());
+
+        assertEquals(1, results.size());
+        assertEquals("美团", results.get(0).getCompanyName());
+    }
+
+    @Test
+    void searchByPositionTitle() {
+        service.create(sampleForm("某公司", "高级 Java 工程师"));
+
+        var results = service.search(Optional.of("Java"), Optional.empty());
+
+        assertEquals(1, results.size());
+        assertEquals("高级 Java 工程师", results.get(0).getPositionTitle());
+    }
+
+    private ApplicationForm sampleForm(String company, String position) {
+        ApplicationForm form = new ApplicationForm();
+        form.setCompanyName(company);
+        form.setPositionTitle(position);
+        form.setStage(ApplicationStage.APPLIED);
+        form.setAppliedAt(LocalDate.now());
+        return form;
     }
 }
