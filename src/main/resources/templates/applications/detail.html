@@ -61,6 +61,7 @@
         <p th:if="${jobApplication.prepDone}"><strong>准备状态：</strong>已完成</p>
         <div class="actions">
             <a class="btn" th:href="@{/applications/{id}/edit(id=${jobApplication.id})}">编辑</a>
+            <a class="btn" th:href="@{/applications/{id}/export(id=${jobApplication.id})}">导出 Markdown</a>
             <form th:action="@{/applications/{id}/delete(id=${jobApplication.id})}" method="post" style="display:inline"
                   onsubmit="return confirm('确定删除这条投递及所有面试记录？');">
                 <button class="btn btn-danger" type="submit">删除</button>

@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -84,6 +85,24 @@ class ApplicationWebTest {
                         .param("template", InterviewTemplateService.JAVA_BACKEND))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(FlashMessages.SUCCESS, containsString("未覆盖")));
+    }
+
+    @Test
+    void exportMarkdownReturnsAttachment() throws Exception {
+        String redirectUrl = mockMvc.perform(post("/applications")
+                        .param("companyName", "美团")
+                        .param("positionTitle", "Java")
+                        .param("stage", "APPLIED")
+                        .param("appliedAt", "2026-07-12"))
+                .andExpect(status().is3xxRedirection())
+                .andReturn()
+                .getResponse()
+                .getRedirectedUrl();
+
+        mockMvc.perform(get(redirectUrl + "/export"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", containsString("attachment")))
+                .andExpect(content().string(containsString("# 美团")));
     }
 
     @Test

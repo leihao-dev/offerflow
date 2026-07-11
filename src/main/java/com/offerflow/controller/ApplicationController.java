@@ -7,12 +7,17 @@ import com.offerflow.model.JobApplication;
 import com.offerflow.service.CompanyService;
 import com.offerflow.service.InterviewTemplateService;
 import com.offerflow.service.JobApplicationService;
+import com.offerflow.service.MarkdownExportService;
 import com.offerflow.service.UnknownInterviewTemplateException;
 import com.offerflow.web.FlashMessages;
 import com.offerflow.web.StageLabels;
 import jakarta.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Optional;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,14 +36,17 @@ public class ApplicationController {
     private final JobApplicationService applicationService;
     private final CompanyService companyService;
     private final InterviewTemplateService interviewTemplateService;
+    private final MarkdownExportService markdownExportService;
 
     public ApplicationController(
             JobApplicationService applicationService,
             CompanyService companyService,
-            InterviewTemplateService interviewTemplateService) {
+            InterviewTemplateService interviewTemplateService,
+            MarkdownExportService markdownExportService) {
         this.applicationService = applicationService;
         this.companyService = companyService;
         this.interviewTemplateService = interviewTemplateService;
+        this.markdownExportService = markdownExportService;
     }
 
     @GetMapping
@@ -86,6 +94,18 @@ public class ApplicationController {
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
         return "applications/detail";
+    }
+
+    @GetMapping("/{id}/export")
+    public ResponseEntity<byte[]> exportMarkdown(@PathVariable Long id) {
+        JobApplication application = applicationService.requireApplication(id);
+        String markdown = markdownExportService.export(application);
+        String filename = markdownExportService.buildFilename(application);
+        byte[] bytes = markdown.getBytes(StandardCharsets.UTF_8);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .contentType(new MediaType("text", "markdown", StandardCharsets.UTF_8))
+                .body(bytes);
     }
 
     @PostMapping("/{id}/apply-template")
