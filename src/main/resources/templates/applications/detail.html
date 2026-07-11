@@ -27,7 +27,7 @@
         <div class="stage-actions">
             <form th:each="s : ${stages}" th:action="@{/applications/{id}/stage(id=${application.id})}" method="post" style="display:inline">
                 <input type="hidden" name="stage" th:value="${s}"/>
-                <button class="btn btn-sm" th:classappend="${application.stage == s} ? ' btn-primary'" type="submit"
+                <button class="btn btn-sm" th:classappend="${application.stage == s} ? ' btn-primary' : ''" type="submit"
                         th:text="${stageLabels[s]}">阶段</button>
             </form>
         </div>

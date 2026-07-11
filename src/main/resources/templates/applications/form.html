@@ -37,9 +37,11 @@
             <select id="stage" th:field="*{stage}">
                 <option th:each="s : ${stages}" th:value="${s}" th:text="${stageLabels[s]}"></option>
             </select>
+            <div class="error" th:if="${#fields.hasErrors('stage')}" th:errors="*{stage}"></div>
 
             <label for="appliedAt">投递日期 *</label>
             <input id="appliedAt" type="date" th:field="*{appliedAt}"/>
+            <div class="error" th:if="${#fields.hasErrors('appliedAt')}" th:errors="*{appliedAt}"></div>
 
             <label for="nextFollowUpAt">下次跟进日期</label>
             <input id="nextFollowUpAt" type="date" th:field="*{nextFollowUpAt}"/>

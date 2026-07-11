@@ -34,10 +34,6 @@
         </div>
     </div>
 
-    <div class="card" th:if="${dashboard.overdueApplications().isEmpty()}">
-        <p>暂无逾期跟进，保持节奏 👍</p>
-    </div>
-
     <div class="card" th:unless="${dashboard.overdueApplications().isEmpty()}">
         <h2>待跟进</h2>
         <table>
