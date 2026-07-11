@@ -5,6 +5,7 @@ import com.offerflow.model.InterviewNote;
 import com.offerflow.model.JobApplication;
 import com.offerflow.service.InterviewNoteService;
 import com.offerflow.service.JobApplicationService;
+import com.offerflow.web.FlashMessages;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping
 public class InterviewController {
 
     private final InterviewNoteService interviewNoteService;
@@ -43,7 +43,8 @@ public class InterviewController {
             @PathVariable Long applicationId,
             @Valid @ModelAttribute("form") InterviewNoteForm form,
             BindingResult result,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         form.setApplicationId(applicationId);
         if (result.hasErrors()) {
             model.addAttribute("application", applicationService.requireApplication(applicationId));
@@ -51,6 +52,7 @@ public class InterviewController {
             return "interviews/form";
         }
         interviewNoteService.create(form);
+        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "面试复盘已添加。");
         return "redirect:/applications/" + applicationId;
     }
 
@@ -69,7 +71,8 @@ public class InterviewController {
             @PathVariable Long id,
             @Valid @ModelAttribute("form") InterviewNoteForm form,
             BindingResult result,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         InterviewNote note = interviewNoteService.requireNote(id);
         form.setApplicationId(note.getApplication().getId());
         if (result.hasErrors()) {
@@ -78,14 +81,16 @@ public class InterviewController {
             return "interviews/form";
         }
         interviewNoteService.update(id, form);
+        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "面试复盘已更新。");
         return "redirect:/applications/" + note.getApplication().getId();
     }
 
     @PostMapping("/interviews/{id}/delete")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         InterviewNote note = interviewNoteService.requireNote(id);
         Long applicationId = note.getApplication().getId();
         interviewNoteService.delete(id);
+        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "面试复盘已删除。");
         return "redirect:/applications/" + applicationId;
     }
 

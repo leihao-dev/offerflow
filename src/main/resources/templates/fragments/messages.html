@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="flash" th:if="${successMessage}" class="flash flash-success" role="status" th:text="${successMessage}">
+    操作成功
+</div>
+</body>
+</html>

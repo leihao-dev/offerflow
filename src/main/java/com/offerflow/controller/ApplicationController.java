@@ -4,6 +4,7 @@ import com.offerflow.dto.ApplicationForm;
 import com.offerflow.model.ApplicationStage;
 import com.offerflow.model.JobApplication;
 import com.offerflow.service.JobApplicationService;
+import com.offerflow.web.FlashMessages;
 import com.offerflow.web.StageLabels;
 import jakarta.validation.Valid;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/applications")
@@ -46,12 +48,17 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public String create(@Valid @ModelAttribute("form") ApplicationForm form, BindingResult result, Model model) {
+    public String create(
+            @Valid @ModelAttribute("form") ApplicationForm form,
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             populateFormModel(model, "新增投递");
             return "applications/form";
         }
         JobApplication saved = applicationService.create(form);
+        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "投递记录已创建。");
         return "redirect:/applications/" + saved.getId();
     }
 
@@ -77,24 +84,32 @@ public class ApplicationController {
             @PathVariable Long id,
             @Valid @ModelAttribute("form") ApplicationForm form,
             BindingResult result,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             populateFormModel(model, "编辑投递");
             return "applications/form";
         }
         applicationService.update(id, form);
+        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "投递记录已更新。");
         return "redirect:/applications/" + id;
     }
 
     @PostMapping("/{id}/stage")
-    public String updateStage(@PathVariable Long id, @RequestParam ApplicationStage stage) {
+    public String updateStage(
+            @PathVariable Long id,
+            @RequestParam ApplicationStage stage,
+            RedirectAttributes redirectAttributes) {
         applicationService.updateStage(id, stage);
+        redirectAttributes.addFlashAttribute(
+                FlashMessages.SUCCESS, "阶段已更新为「" + StageLabels.label(stage) + "」。");
         return "redirect:/applications/" + id;
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         applicationService.delete(id);
+        redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "投递记录已删除。");
         return "redirect:/applications";
     }
 

@@ -15,6 +15,7 @@
     </nav>
 </header>
 <main class="container">
+    <div th:replace="~{fragments/messages :: flash}"></div>
     <h1 th:text="${pageTitle}">面试复盘</h1>
     <p class="muted" th:text="${application.companyName + ' · ' + application.positionTitle}">岗位</p>
 

@@ -2,15 +2,27 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>未找到 · OfferFlow</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
+<header>
+    <nav>
+        <a class="brand" th:href="@{/}">OfferFlow</a>
+        <a th:href="@{/dashboard}">仪表盘</a>
+        <a th:href="@{/applications}">投递列表</a>
+        <a class="btn btn-primary" th:href="@{/applications/new}">+ 新增投递</a>
+    </nav>
+</header>
 <main class="container">
     <div class="card">
-        <h1>404</h1>
-        <p th:text="${message}">未找到</p>
-        <a class="btn" th:href="@{/}">返回首页</a>
+        <h1>页面未找到</h1>
+        <p th:text="${message} ?: '请求的资源不存在。'">未找到</p>
+        <div class="actions">
+            <a class="btn btn-primary" th:href="@{/dashboard}">返回仪表盘</a>
+            <a class="btn" th:href="@{/applications}">投递列表</a>
+        </div>
     </div>
 </main>
 </body>
