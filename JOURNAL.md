@@ -47,6 +47,37 @@
   - **Phase 3（面经/准备模板）**：`2026-07-12-interview-template-design.md`；Java 后端 prep + debrief seed；投递详情填充清单 + 带模板新增复盘（Task 14–16）
   - **Phase 5（打磨 + 扩展）**：`2026-07-12-phase5-polish-expansion-design.md`；投递搜索、仪表盘本周面试、Markdown 导出；3 套公司 seed + 3 套面试模板下拉选择；手动公司名关联提示（Task 17–25）
 
+### Day 3 — 2026-07-12（收尾日）
+
+- **做了什么：**
+  - 用 Superpowers **brainstorming** 完成 CC 作业收尾 spec（`docs/superpowers/specs/2026-07-12-cc-assignment-wrapup-design.md`）
+  - 编写收尾 implementation plan（`docs/superpowers/plans/2026-07-12-cc-assignment-wrapup.md`）
+  - 旁白稿见 wrap-up plan Task 2（`docs/superpowers/plans/2026-07-12-cc-assignment-wrapup.md`）
+  - 补全 JOURNAL 收尾章节（本段 +「这玩意还不行」+ 作业检查表）
+- **待手动完成（见 plan Task 1–6、8–9）：**
+  - `.\gradlew.bat test` 基线
+  - 全站手动 QA（清单见 wrap-up spec §3）
+  - B 站 Demo 录制与上传
+  - 推送 spec/plan/JOURNAL commit 到 `origin/master`
+  - 按作业模板发送邮件
+- **QA 结果摘要：**（手动 QA 后把「待测」改为 PASS/FAIL）
+
+| 项 | 结果 | 备注 |
+|----|------|------|
+| bootRun | 待测 | |
+| persistence | 待测 | |
+| application CRUD + search | 待测 | |
+| dashboard week interviews | 待测 | |
+| interview templates (×3) | 待测 | |
+| company seeds (×3) | 待测 | |
+| markdown export | 待测 | |
+| error pages | 待测 | |
+| gradlew test | 待测 | |
+
+- **Demo：** 录制日期 ___ · B站 ___ · 第二遍会放慢模板填充那段
+- **邮件：** ___ 已发送至作业指定邮箱
+- **收尾反思：** 若重做 CC 周挑战，会在 Day 1 结束时就跑一遍最小主路径手测，而不是等到 Day 2 才发现模板层 bug；brainstorming 流程仍值得保留，小修可用 Lightweight Mode 跳过。
+
 ---
 
 ## 认知变化：Day 1 vs Day 2
@@ -60,6 +91,8 @@
 **具体例子 1：** bugfix 轮若直接让 AI「修 Whitelabel」，可能只改 URL；复盘后发现是 Thymeleaf 枚举 Map + 保留名两个根因，一轮 spec 全解决。
 
 **具体例子 2：** Phase 2 用 `/think` 拒绝了「自动爬公司/AI 面经」，改为用户自策展的公司档案库——2 天可交付且解决真实痛点（外链 + 内推）。
+
+**Day 3 收尾视角：** 从「把功能写完」转向「把作业交出去」——Demo 脚本逼着我用用户视角走一遍 A1–A4，比再看一遍代码更能发现叙事缺口。JOURNAL 不必虚构 Day 4–7，诚实记录 + git 历史更有说服力。
 
 ---
 
@@ -75,20 +108,21 @@
 
 ## 这玩意还不行（≥1 件）
 
-- **场景：** （待填写 — 建议记录一次 AI 理解错误、Superpowers 管太多、或 Cursor 上下文丢失）
-- **Prompt 片段 / 截图：** （待粘贴）
-- **期望 vs 实际：** （待填写）
+- **场景：** Day 2 功能「看起来写完」，手动点进投递列表和详情却出现 Whitelabel Error，但 `.\gradlew.bat test` 全部通过。花了半小时翻终端日志才发现是 Thymeleaf 把 `application` 当保留名、阶段标签用枚举 Map 查找失败。
+- **Prompt 片段 / 截图：** 当时对 CC 说「修一下 Whitelabel」——若没先走 brainstorming 列 bug 清单，AI 可能只改 URL 或异常处理器，找不到模板根因。
+- **期望 vs 实际：** 期望测试绿了就代表主路径可用；实际 Web 层模板绑定和 Service 单元测试是两层，必须补 MockMvc 冒烟 + 人工点一遍主流程。
 
 ---
 
-## 作业收尾（待完成）
+## 作业收尾
 
-| 事项 | 状态 |
-|------|------|
-| 推送远程 `origin/master` | 待做（Phase 5 Task 17–25 本地已 commit，待 push） |
-| 录 3–5 分钟 Demo 视频 | 待做 |
-| 全站手动 QA | 待做 |
-| 按作业要求发邮件 | 待做 |
+| 事项 | 状态 | 完成日期 |
+|------|------|----------|
+| 推送远程 `origin/master`（Phase 5 代码） | 完成 | 2026-07-12 |
+| 推送远程（收尾 spec/plan/JOURNAL） | 待做 | |
+| 录 3–5 分钟 Demo 视频 | 待做 | |
+| 全站手动 QA | 待做 | |
+| 按作业要求发邮件 | 待做 | |
 
 ## 后续产品方向
 
