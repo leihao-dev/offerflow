@@ -70,4 +70,34 @@ class GlobalExceptionHandlerWebTest {
                 .andExpect(content().string(containsString("已投递")))
                 .andExpect(content().string(containsString("技术面试")));
     }
+
+    @Test
+    void detailShowsCompanyDossierWhenLinked() throws Exception {
+        String companyRedirect = mockMvc.perform(post("/companies")
+                        .param("name", "Dossier Co")
+                        .param("careersUrl", "https://jobs.dossier.example.com"))
+                .andExpect(status().is3xxRedirection())
+                .andReturn()
+                .getResponse()
+                .getRedirectedUrl();
+
+        String companyId = companyRedirect.replace("/companies/", "");
+
+        String applicationRedirect = mockMvc.perform(post("/applications")
+                        .param("companyId", companyId)
+                        .param("positionTitle", "Backend Dev")
+                        .param("stage", ApplicationStage.APPLIED.name())
+                        .param("appliedAt", LocalDate.of(2026, 7, 10).toString()))
+                .andExpect(status().is3xxRedirection())
+                .andReturn()
+                .getResponse()
+                .getRedirectedUrl();
+
+        mockMvc.perform(get(applicationRedirect))
+                .andExpect(status().isOk())
+                .andExpect(view().name("applications/detail"))
+                .andExpect(content().string(containsString("公司档案")))
+                .andExpect(content().string(containsString("https://jobs.dossier.example.com")))
+                .andExpect(content().string(containsString("招聘页")));
+    }
 }

@@ -16,6 +16,32 @@
         <span class="muted" th:if="${jobApplication.source != null}" th:text="' · ' + ${jobApplication.source}"></span>
     </p>
 
+    <div class="card" th:if="${jobApplication.company != null}">
+        <h2>公司档案</h2>
+        <p>
+            <strong th:text="${jobApplication.company.name}">公司</strong>
+            <span class="muted" th:if="${jobApplication.company.industry != null}"
+                  th:text="' · ' + ${jobApplication.company.industry}"></span>
+        </p>
+        <div class="actions">
+            <a th:if="${jobApplication.company.websiteUrl != null}" class="btn btn-sm"
+               th:href="${jobApplication.company.websiteUrl}" target="_blank" rel="noopener">官网</a>
+            <a th:if="${jobApplication.company.careersUrl != null}" class="btn btn-sm btn-primary"
+               th:href="${jobApplication.company.careersUrl}" target="_blank" rel="noopener">招聘页</a>
+            <a th:if="${jobApplication.company.referralUrl != null}" class="btn btn-sm"
+               th:href="${jobApplication.company.referralUrl}" target="_blank" rel="noopener">内推链接</a>
+            <a th:if="${jobApplication.company.externalDebriefUrl != null}" class="btn btn-sm"
+               th:href="${jobApplication.company.externalDebriefUrl}" target="_blank" rel="noopener">面经外链</a>
+            <a class="btn btn-sm" th:href="@{/companies/{id}(id=${jobApplication.company.id})}">查看完整档案</a>
+        </div>
+        <p th:if="${jobApplication.company.referralCode != null}">
+            <strong>内推码：</strong><span th:text="${jobApplication.company.referralCode}"></span>
+        </p>
+        <p th:if="${jobApplication.company.referralContact != null}">
+            <strong>内推联系人：</strong><span th:text="${jobApplication.company.referralContact}"></span>
+        </p>
+    </div>
+
     <div class="card">
         <h2>快速更新阶段</h2>
         <div class="stage-actions">
@@ -48,7 +74,7 @@
     </div>
 
     <div class="card" th:if="${jobApplication.companyNotes != null and !jobApplication.companyNotes.isBlank()}">
-        <h2>公司笔记</h2>
+        <h2>本岗位调研笔记</h2>
         <pre th:text="${jobApplication.companyNotes}" style="white-space:pre-wrap;font-family:inherit;"></pre>
     </div>
 

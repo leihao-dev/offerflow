@@ -17,9 +17,20 @@
             <p class="error" th:if="${#fields.hasAnyErrors()}" role="alert">请修正标红字段后重新提交。</p>
             <input type="hidden" th:field="*{id}"/>
 
-            <label for="companyName">公司名称 *</label>
-            <input id="companyName" th:field="*{companyName}"/>
-            <div class="error" th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></div>
+            <label for="companyId">公司 *</label>
+            <select id="companyId" th:field="*{companyId}">
+                <option value="">手动输入公司名称</option>
+                <option th:each="c : ${companies}" th:value="${c.id}" th:text="${c.name}">公司</option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('companyProvided')}" th:errors="*{companyProvided}"></div>
+            <p class="muted" style="margin-top:8px;">
+                没有目标公司？<a th:href="@{/companies/new}" target="_blank" rel="noopener">新建公司档案</a>
+            </p>
+
+            <div id="manualCompanyRow">
+                <label for="companyName">公司名称（手动输入）*</label>
+                <input id="companyName" th:field="*{companyName}"/>
+            </div>
 
             <label for="positionTitle">岗位名称 *</label>
             <input id="positionTitle" th:field="*{positionTitle}"/>
@@ -48,7 +59,7 @@
             <label for="jdContent">JD 原文</label>
             <textarea id="jdContent" th:field="*{jdContent}"></textarea>
 
-            <label for="companyNotes">公司调研笔记</label>
+            <label for="companyNotes">本岗位调研笔记</label>
             <textarea id="companyNotes" th:field="*{companyNotes}"></textarea>
 
             <label for="prepChecklist">准备清单（每行一项）</label>
@@ -65,5 +76,20 @@
         </form>
     </div>
 </main>
+<script>
+    (function () {
+        var companySelect = document.getElementById('companyId');
+        var manualRow = document.getElementById('manualCompanyRow');
+        if (!companySelect || !manualRow) {
+            return;
+        }
+        function syncManualCompanyRow() {
+            var useManual = !companySelect.value;
+            manualRow.style.display = useManual ? 'block' : 'none';
+        }
+        companySelect.addEventListener('change', syncManualCompanyRow);
+        syncManualCompanyRow();
+    })();
+</script>
 </body>
 </html>

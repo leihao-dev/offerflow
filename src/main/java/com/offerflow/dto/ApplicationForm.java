@@ -12,7 +12,8 @@ public class ApplicationForm {
 
     private Long id;
 
-    @NotBlank(message = "公司名称不能为空")
+    private Long companyId;
+
     @Size(max = 200)
     private String companyName;
 
@@ -47,6 +48,22 @@ public class ApplicationForm {
             return true;
         }
         return !nextFollowUpAt.isBefore(appliedAt);
+    }
+
+    @AssertTrue(message = "请选择公司档案或填写公司名称")
+    public boolean isCompanyProvided() {
+        if (companyId != null) {
+            return true;
+        }
+        return companyName != null && !companyName.isBlank();
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
     public Long getId() {

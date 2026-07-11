@@ -2,6 +2,7 @@ package com.offerflow.service;
 
 import com.offerflow.dto.ApplicationForm;
 import com.offerflow.model.ApplicationStage;
+import com.offerflow.model.Company;
 import com.offerflow.model.JobApplication;
 import com.offerflow.repository.JobApplicationRepository;
 import java.time.LocalDate;
@@ -19,9 +20,11 @@ public class JobApplicationService {
             EnumSet.of(ApplicationStage.OFFER, ApplicationStage.REJECTED, ApplicationStage.WITHDRAWN);
 
     private final JobApplicationRepository repository;
+    private final CompanyService companyService;
 
-    public JobApplicationService(JobApplicationRepository repository) {
+    public JobApplicationService(JobApplicationRepository repository, CompanyService companyService) {
         this.repository = repository;
+        this.companyService = companyService;
     }
 
     public JobApplication create(ApplicationForm form) {
@@ -74,7 +77,7 @@ public class JobApplicationService {
     }
 
     private void applyForm(JobApplication application, ApplicationForm form) {
-        application.setCompanyName(form.getCompanyName());
+        applyCompany(application, form);
         application.setPositionTitle(form.getPositionTitle());
         application.setSource(form.getSource());
         application.setStage(form.getStage() != null ? form.getStage() : ApplicationStage.APPLIED);
@@ -85,5 +88,16 @@ public class JobApplicationService {
         application.setCompanyNotes(form.getCompanyNotes());
         application.setPrepChecklist(form.getPrepChecklist());
         application.setPrepDone(form.getPrepDone() != null && form.getPrepDone());
+    }
+
+    private void applyCompany(JobApplication application, ApplicationForm form) {
+        if (form.getCompanyId() != null) {
+            Company company = companyService.requireCompany(form.getCompanyId());
+            application.setCompany(company);
+            application.setCompanyName(company.getName());
+            return;
+        }
+        application.setCompany(null);
+        application.setCompanyName(form.getCompanyName().trim());
     }
 }

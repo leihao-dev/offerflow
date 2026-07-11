@@ -28,7 +28,10 @@
             <tbody>
             <tr th:each="app : ${applications}"
                 th:classappend="${T(com.offerflow.support.FollowUpRules).isOverdue(app, today)} ? 'row-overdue' : ''">
-                <td th:text="${app.companyName}">公司</td>
+                <td>
+                    <a th:if="${app.company != null}" th:href="@{/companies/{id}(id=${app.company.id})}" th:text="${app.companyName}">公司</a>
+                    <span th:if="${app.company == null}" th:text="${app.companyName}">公司</span>
+                </td>
                 <td th:text="${app.positionTitle}">岗位</td>
                 <td><span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span></td>
                 <td th:text="${app.appliedAt}">日期</td>

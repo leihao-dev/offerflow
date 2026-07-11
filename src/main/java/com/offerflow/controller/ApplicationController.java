@@ -3,6 +3,7 @@ package com.offerflow.controller;
 import com.offerflow.dto.ApplicationForm;
 import com.offerflow.model.ApplicationStage;
 import com.offerflow.model.JobApplication;
+import com.offerflow.service.CompanyService;
 import com.offerflow.service.JobApplicationService;
 import com.offerflow.web.FlashMessages;
 import com.offerflow.web.StageLabels;
@@ -25,9 +26,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ApplicationController {
 
     private final JobApplicationService applicationService;
+    private final CompanyService companyService;
 
-    public ApplicationController(JobApplicationService applicationService) {
+    public ApplicationController(JobApplicationService applicationService, CompanyService companyService) {
         this.applicationService = applicationService;
+        this.companyService = companyService;
     }
 
     @GetMapping
@@ -44,9 +47,7 @@ public class ApplicationController {
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("form", new ApplicationForm());
-        model.addAttribute("stages", ApplicationStage.values());
-        model.addAttribute("stageLabels", StageLabels.all());
-        model.addAttribute("pageTitle", "新增投递");
+        populateFormModel(model, "新增投递");
         return "applications/form";
     }
 
@@ -119,13 +120,19 @@ public class ApplicationController {
     private void populateFormModel(Model model, String pageTitle) {
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
+        model.addAttribute("companies", companyService.findAll(Optional.empty()));
         model.addAttribute("pageTitle", pageTitle);
     }
 
     private ApplicationForm toForm(JobApplication application) {
         ApplicationForm form = new ApplicationForm();
         form.setId(application.getId());
-        form.setCompanyName(application.getCompanyName());
+        if (application.getCompany() != null) {
+            form.setCompanyId(application.getCompany().getId());
+            form.setCompanyName(application.getCompany().getName());
+        } else {
+            form.setCompanyName(application.getCompanyName());
+        }
         form.setPositionTitle(application.getPositionTitle());
         form.setSource(application.getSource());
         form.setStage(application.getStage());

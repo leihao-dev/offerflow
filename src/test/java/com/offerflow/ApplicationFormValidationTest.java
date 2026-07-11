@@ -47,6 +47,29 @@ class ApplicationFormValidationTest {
     }
 
     @Test
+    void allowsCompanyIdWithoutManualName() {
+        ApplicationForm form = new ApplicationForm();
+        form.setCompanyId(1L);
+        form.setPositionTitle("Dev");
+        form.setStage(ApplicationStage.APPLIED);
+        form.setAppliedAt(LocalDate.of(2026, 7, 10));
+
+        assertTrue(validator.validate(form).stream().noneMatch(v -> v.getPropertyPath().toString().equals("companyProvided")));
+    }
+
+    @Test
+    void rejectsMissingCompanySelection() {
+        ApplicationForm form = new ApplicationForm();
+        form.setPositionTitle("Dev");
+        form.setStage(ApplicationStage.APPLIED);
+        form.setAppliedAt(LocalDate.of(2026, 7, 10));
+
+        Set<ConstraintViolation<ApplicationForm>> violations = validator.validate(form);
+
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().contains("公司档案")));
+    }
+
+    @Test
     void treatsTodayAsOverdueForActiveApplications() {
         LocalDate today = LocalDate.of(2026, 7, 11);
         JobApplication app = new JobApplication();

@@ -1,7 +1,9 @@
 package com.offerflow;
 
 import com.offerflow.dto.ApplicationForm;
+import com.offerflow.dto.CompanyForm;
 import com.offerflow.model.ApplicationStage;
+import com.offerflow.service.CompanyService;
 import com.offerflow.service.JobApplicationService;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,9 @@ class JobApplicationServiceTest {
 
     @Autowired
     private JobApplicationService service;
+
+    @Autowired
+    private CompanyService companyService;
 
     @Test
     void createsApplication() {
@@ -49,6 +54,25 @@ class JobApplicationServiceTest {
         assertEquals("Acme", loaded.getCompanyName());
         assertEquals("Dev", loaded.getPositionTitle());
         assertEquals(ApplicationStage.APPLIED, loaded.getStage());
+    }
+
+    @Test
+    void createLinksCompanyAndSyncsName() {
+        CompanyForm companyForm = new CompanyForm();
+        companyForm.setName("Linked Co");
+        companyForm.setCareersUrl("https://jobs.linked.example.com");
+        var company = companyService.create(companyForm);
+
+        ApplicationForm form = new ApplicationForm();
+        form.setCompanyId(company.getId());
+        form.setPositionTitle("Java Engineer");
+        form.setStage(ApplicationStage.APPLIED);
+        form.setAppliedAt(LocalDate.now());
+
+        var saved = service.create(form);
+
+        assertEquals(company.getId(), saved.getCompany().getId());
+        assertEquals("Linked Co", saved.getCompanyName());
     }
 
     @Test

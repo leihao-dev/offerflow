@@ -57,7 +57,7 @@
             </tr>
             </tbody>
         </table>
-        <p th:if="${applications.isEmpty()}" class="muted">还没有关联投递（Task 10 完成后可从投递表单选择该公司）。</p>
+        <p th:if="${applications.isEmpty()}" class="muted">还没有关联投递。在<a th:href="@{/applications/new}">新增投递</a>时选择该公司档案即可关联。</p>
     </div>
 
     <div class="actions">

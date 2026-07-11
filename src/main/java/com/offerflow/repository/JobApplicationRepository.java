@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
 
-    @Query("SELECT a FROM JobApplication a LEFT JOIN FETCH a.interviewNotes WHERE a.id = :id")
+    @Query("SELECT a FROM JobApplication a LEFT JOIN FETCH a.interviewNotes LEFT JOIN FETCH a.company WHERE a.id = :id")
     Optional<JobApplication> findByIdWithNotes(@Param("id") Long id);
 
     List<JobApplication> findByStageOrderByUpdatedAtDesc(ApplicationStage stage);
