@@ -57,7 +57,8 @@ public class JobApplicationService {
 
     @Transactional(readOnly = true)
     public List<JobApplication> findOverdue(LocalDate today) {
-        return repository.findByNextFollowUpAtBeforeAndStageNotIn(today, TERMINAL_STAGES);
+        return repository.findByNextFollowUpAtNotNullAndNextFollowUpAtLessThanEqualAndStageNotIn(
+                today, TERMINAL_STAGES);
     }
 
     @Transactional(readOnly = true)

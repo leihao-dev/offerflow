@@ -7,6 +7,7 @@ import com.offerflow.service.JobApplicationService;
 import com.offerflow.web.FlashMessages;
 import com.offerflow.web.StageLabels;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,10 +32,12 @@ public class ApplicationController {
 
     @GetMapping
     public String list(@RequestParam(required = false) ApplicationStage stage, Model model) {
+        LocalDate today = LocalDate.now();
         model.addAttribute("applications", applicationService.findAll(Optional.ofNullable(stage)));
         model.addAttribute("selectedStage", stage);
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
+        model.addAttribute("today", today);
         return "applications/list";
     }
 

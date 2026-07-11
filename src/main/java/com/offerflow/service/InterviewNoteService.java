@@ -36,7 +36,9 @@ public class InterviewNoteService {
 
     @Transactional(readOnly = true)
     public InterviewNote requireNote(Long id) {
-        return repository.findById(id).orElseThrow(() -> new InterviewNoteNotFoundException(id));
+        return repository
+                .findByIdWithApplication(id)
+                .orElseThrow(() -> new InterviewNoteNotFoundException(id));
     }
 
     @Transactional(readOnly = true)

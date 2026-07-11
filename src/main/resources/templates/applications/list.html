@@ -33,13 +33,20 @@
             <tr><th>公司</th><th>岗位</th><th>阶段</th><th>投递日</th><th>下次跟进</th><th></th></tr>
             </thead>
             <tbody>
-            <tr th:each="app : ${applications}">
+            <tr th:each="app : ${applications}"
+                th:classappend="${T(com.offerflow.support.FollowUpRules).isOverdue(app, today)} ? 'row-overdue' : ''">
                 <td th:text="${app.companyName}">公司</td>
                 <td th:text="${app.positionTitle}">岗位</td>
                 <td><span class="badge" th:text="${stageLabels[app.stage]}">阶段</span></td>
                 <td th:text="${app.appliedAt}">日期</td>
-                <td th:text="${app.nextFollowUpAt != null ? app.nextFollowUpAt : '-'}">跟进</td>
-                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">详情</a></td>
+                <td>
+                    <span th:text="${app.nextFollowUpAt != null ? app.nextFollowUpAt : '-'}">跟进</span>
+                    <span class="overdue-tag" th:if="${T(com.offerflow.support.FollowUpRules).isOverdue(app, today)}">逾期</span>
+                </td>
+                <td class="actions">
+                    <a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">详情</a>
+                    <a class="btn btn-sm" th:href="@{/applications/{id}/edit(id=${app.id})}">编辑</a>
+                </td>
             </tr>
             </tbody>
         </table>

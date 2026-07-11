@@ -53,4 +53,27 @@ class JobApplicationServiceTest {
 
         assertEquals(1, service.countActive());
     }
+
+    @Test
+    void findOverdueIncludesToday() {
+        LocalDate today = LocalDate.now();
+
+        ApplicationForm dueToday = new ApplicationForm();
+        dueToday.setCompanyName("Due Today");
+        dueToday.setPositionTitle("Dev");
+        dueToday.setStage(ApplicationStage.APPLIED);
+        dueToday.setAppliedAt(today.minusDays(3));
+        dueToday.setNextFollowUpAt(today);
+        service.create(dueToday);
+
+        ApplicationForm future = new ApplicationForm();
+        future.setCompanyName("Future");
+        future.setPositionTitle("Dev");
+        future.setStage(ApplicationStage.APPLIED);
+        future.setAppliedAt(today);
+        future.setNextFollowUpAt(today.plusDays(1));
+        service.create(future);
+
+        assertEquals(1, service.findOverdue(today).size());
+    }
 }

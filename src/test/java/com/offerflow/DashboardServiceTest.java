@@ -37,4 +37,19 @@ class DashboardServiceTest {
         assertEquals(1, view.overdueCount());
         assertEquals(1, view.activeCount());
     }
+
+    @Test
+    void countsFollowUpDueTodayAsOverdue() {
+        ApplicationForm dueToday = new ApplicationForm();
+        dueToday.setCompanyName("Due Today Co");
+        dueToday.setPositionTitle("Backend");
+        dueToday.setStage(ApplicationStage.SCREENING);
+        dueToday.setAppliedAt(LocalDate.now().minusDays(5));
+        dueToday.setNextFollowUpAt(LocalDate.now());
+        applicationService.create(dueToday);
+
+        var view = dashboardService.build(LocalDate.now());
+
+        assertEquals(1, view.overdueCount());
+    }
 }

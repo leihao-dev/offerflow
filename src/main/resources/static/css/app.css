@@ -141,3 +141,17 @@ textarea { min-height: 100px; resize: vertical; }
 .muted { color: var(--muted); }
 h1, h2, h3 { margin-top: 0; }
 .stage-actions { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+
+tr.row-overdue { background: #fef2f2; }
+tr.row-overdue td { border-bottom-color: #fecaca; }
+.overdue-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    background: #fee2e2;
+    color: var(--danger);
+    font-weight: 600;
+}
+td.actions { white-space: nowrap; }

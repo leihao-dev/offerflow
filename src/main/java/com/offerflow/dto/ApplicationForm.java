@@ -1,6 +1,7 @@
 package com.offerflow.dto;
 
 import com.offerflow.model.ApplicationStage;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -39,6 +40,14 @@ public class ApplicationForm {
     private String companyNotes;
     private String prepChecklist;
     private Boolean prepDone = false;
+
+    @AssertTrue(message = "跟进日期不能早于投递日期")
+    public boolean isFollowUpOnOrAfterAppliedAt() {
+        if (nextFollowUpAt == null || appliedAt == null) {
+            return true;
+        }
+        return !nextFollowUpAt.isBefore(appliedAt);
+    }
 
     public Long getId() {
         return id;

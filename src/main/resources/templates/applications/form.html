@@ -47,6 +47,7 @@
 
             <label for="nextFollowUpAt">下次跟进日期</label>
             <input id="nextFollowUpAt" type="date" th:field="*{nextFollowUpAt}"/>
+            <div class="error" th:if="${#fields.hasErrors('followUpOnOrAfterAppliedAt')}" th:errors="*{followUpOnOrAfterAppliedAt}"></div>
 
             <label for="salaryRange">薪资范围</label>
             <input id="salaryRange" th:field="*{salaryRange}" placeholder="20-30K"/>

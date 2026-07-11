@@ -21,7 +21,7 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
 
     long countByStageNotIn(Collection<ApplicationStage> terminalStages);
 
-    List<JobApplication> findByNextFollowUpAtBeforeAndStageNotIn(
+    List<JobApplication> findByNextFollowUpAtNotNullAndNextFollowUpAtLessThanEqualAndStageNotIn(
             LocalDate date, Collection<ApplicationStage> terminalStages);
 
     List<JobApplication> findTop5ByOrderByUpdatedAtDesc();
