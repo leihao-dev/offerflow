@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${company.name + ' · OfferFlow'}">公司详情</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header th:replace="~{fragments/nav :: nav('companies')}"></header>
+<main class="container">
+    <div th:replace="~{fragments/messages :: flash}"></div>
+    <h1 th:text="${company.name}">公司</h1>
+    <p class="muted" th:if="${company.industry != null}" th:text="${company.industry}">行业</p>
+
+    <div class="card">
+        <h2>快捷链接</h2>
+        <div class="actions">
+            <a th:if="${company.websiteUrl != null}" class="btn btn-sm" th:href="${company.websiteUrl}"
+               target="_blank" rel="noopener">官网</a>
+            <a th:if="${company.careersUrl != null}" class="btn btn-sm btn-primary" th:href="${company.careersUrl}"
+               target="_blank" rel="noopener">招聘页</a>
+            <a th:if="${company.referralUrl != null}" class="btn btn-sm" th:href="${company.referralUrl}"
+               target="_blank" rel="noopener">内推链接</a>
+            <a th:if="${company.externalDebriefUrl != null}" class="btn btn-sm" th:href="${company.externalDebriefUrl}"
+               target="_blank" rel="noopener">面经外链</a>
+            <span th:if="${company.websiteUrl == null and company.careersUrl == null and company.referralUrl == null and company.externalDebriefUrl == null}"
+                  class="muted">暂无外链，可在编辑页补充。</span>
+        </div>
+    </div>
+
+    <div class="card" th:if="${company.referralCode != null or company.referralContact != null or company.referralMethod != null or company.referralNotes != null}">
+        <h2>内推信息</h2>
+        <p th:if="${company.referralCode != null}"><strong>内推码：</strong><span th:text="${company.referralCode}"></span></p>
+        <p th:if="${company.referralContact != null}"><strong>联系人：</strong><span th:text="${company.referralContact}"></span></p>
+        <p th:if="${company.referralMethod != null}"><strong>方式：</strong><span th:text="${company.referralMethod}"></span></p>
+        <p th:if="${company.referralNotes != null}"><strong>备注：</strong><br/><span th:text="${company.referralNotes}"></span></p>
+    </div>
+
+    <div class="card" th:if="${company.companyNotes != null and !company.companyNotes.isBlank()}">
+        <h2>公司调研</h2>
+        <pre th:text="${company.companyNotes}" style="white-space:pre-wrap;font-family:inherit;"></pre>
+    </div>
+
+    <div class="card">
+        <h2>关联投递</h2>
+        <table th:if="${!applications.isEmpty()}">
+            <thead>
+            <tr><th>岗位</th><th>阶段</th><th>投递日</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="app : ${applications}">
+                <td th:text="${app.positionTitle}">岗位</td>
+                <td><span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span></td>
+                <td th:text="${app.appliedAt}">日期</td>
+                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">查看投递</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${applications.isEmpty()}" class="muted">还没有关联投递（Task 10 完成后可从投递表单选择该公司）。</p>
+    </div>
+
+    <div class="actions">
+        <a class="btn" th:href="@{/companies/{id}/edit(id=${company.id})}">编辑</a>
+        <form th:action="@{/companies/{id}/delete(id=${company.id})}" method="post" style="display:inline"
+              onsubmit="return confirm('确定删除该公司档案？');">
+            <button class="btn btn-danger" type="submit">删除</button>
+        </form>
+        <a class="btn" th:href="@{/companies}">返回列表</a>
+    </div>
+</main>
+</body>
+</html>

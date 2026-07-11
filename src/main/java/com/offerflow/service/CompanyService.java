@@ -2,10 +2,12 @@ package com.offerflow.service;
 
 import com.offerflow.dto.CompanyForm;
 import com.offerflow.model.Company;
+import com.offerflow.model.JobApplication;
 import com.offerflow.repository.CompanyRepository;
 import com.offerflow.repository.JobApplicationRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +52,22 @@ public class CompanyService {
     @Transactional(readOnly = true)
     public long countApplications(Long companyId) {
         return applicationRepository.countByCompanyId(companyId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<JobApplication> findApplications(Long companyId) {
+        requireCompany(companyId);
+        return applicationRepository.findByCompanyIdOrderByUpdatedAtDesc(companyId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> findDistinctIndustries() {
+        return companyRepository.findAllByOrderByNameAsc().stream()
+                .map(Company::getIndustry)
+                .filter(industry -> industry != null && !industry.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     public void delete(Long id) {

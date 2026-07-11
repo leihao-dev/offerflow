@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${pageTitle + ' · OfferFlow'}">公司表单</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header th:replace="~{fragments/nav :: nav(${form.id == null} ? 'companies-new' : 'companies')}"></header>
+<main class="container">
+    <div th:replace="~{fragments/messages :: flash}"></div>
+    <h1 th:text="${pageTitle}">表单</h1>
+    <div class="card">
+        <form th:action="${form.id != null} ? @{/companies/{id}(id=${form.id})} : @{/companies}"
+              method="post" th:object="${form}">
+            <p class="error" th:if="${#fields.hasAnyErrors()}" role="alert">请修正标红字段后重新提交。</p>
+            <input type="hidden" th:field="*{id}"/>
+
+            <label for="name">公司名称 *</label>
+            <input id="name" th:field="*{name}"/>
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+            <label for="industry">行业</label>
+            <input id="industry" th:field="*{industry}" placeholder="互联网 / 金融 / 制造业"/>
+
+            <label for="websiteUrl">公司官网</label>
+            <input id="websiteUrl" th:field="*{websiteUrl}" placeholder="https://www.example.com"/>
+            <div class="error" th:if="${#fields.hasErrors('websiteUrlValid')}" th:errors="*{websiteUrlValid}"></div>
+
+            <label for="careersUrl">招聘官网</label>
+            <input id="careersUrl" th:field="*{careersUrl}" placeholder="https://jobs.example.com"/>
+            <div class="error" th:if="${#fields.hasErrors('careersUrlValid')}" th:errors="*{careersUrlValid}"></div>
+
+            <h2>内推信息</h2>
+
+            <label for="referralCode">内推码</label>
+            <input id="referralCode" th:field="*{referralCode}"/>
+
+            <label for="referralContact">内推联系人</label>
+            <input id="referralContact" th:field="*{referralContact}"/>
+
+            <label for="referralMethod">内推方式</label>
+            <input id="referralMethod" th:field="*{referralMethod}" placeholder="员工内推 / 猎头 / 官网"/>
+
+            <label for="referralUrl">内推链接</label>
+            <input id="referralUrl" th:field="*{referralUrl}" placeholder="https://"/>
+            <div class="error" th:if="${#fields.hasErrors('referralUrlValid')}" th:errors="*{referralUrlValid}"></div>
+
+            <label for="referralNotes">内推备注</label>
+            <textarea id="referralNotes" th:field="*{referralNotes}"></textarea>
+
+            <label for="externalDebriefUrl">面经外链</label>
+            <input id="externalDebriefUrl" th:field="*{externalDebriefUrl}" placeholder="牛客 / 知乎等面经链接"/>
+            <div class="error" th:if="${#fields.hasErrors('externalDebriefUrlValid')}" th:errors="*{externalDebriefUrlValid}"></div>
+
+            <label for="companyNotes">公司调研笔记</label>
+            <textarea id="companyNotes" th:field="*{companyNotes}"></textarea>
+
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">保存</button>
+                <a class="btn" th:href="${form.id != null} ? @{/companies/{id}(id=${form.id})} : @{/companies}">取消</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

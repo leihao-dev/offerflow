@@ -14,6 +14,8 @@
                th:classappend="${activePage == 'dashboard'} ? ' nav-active' : ''">仪表盘</a>
             <a th:href="@{/applications}"
                th:classappend="${activePage == 'applications'} ? ' nav-active' : ''">投递列表</a>
+            <a th:href="@{/companies}"
+               th:classappend="${activePage == 'companies' or activePage == 'companies-new'} ? ' nav-active' : ''">目标公司</a>
             <a class="btn btn-primary" th:href="@{/applications/new}"
                th:classappend="${activePage == 'applications-new'} ? ' nav-active' : ''">+ 新增投递</a>
         </div>

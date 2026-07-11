@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>目标公司 · OfferFlow</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header th:replace="~{fragments/nav :: nav('companies')}"></header>
+<main class="container">
+    <div th:replace="~{fragments/messages :: flash}"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <h1>目标公司</h1>
+        <a class="btn btn-primary" th:href="@{/companies/new}">+ 新增公司</a>
+    </div>
+    <p class="muted">维护官网、招聘页与内推信息，投递时可重复引用同一份档案。</p>
+
+    <div class="actions" th:if="${!industries.isEmpty()}">
+        <a class="btn btn-sm" th:classappend="${selectedIndustry == null} ? 'btn-primary' : ''" th:href="@{/companies}">全部行业</a>
+        <a class="btn btn-sm" th:each="ind : ${industries}"
+           th:classappend="${selectedIndustry == ind} ? 'btn-primary' : ''"
+           th:href="@{/companies(industry=${ind})}"
+           th:text="${ind}">行业</a>
+    </div>
+
+    <div class="card">
+        <table th:if="${!companies.isEmpty()}">
+            <thead>
+            <tr><th>公司</th><th>行业</th><th>内推码</th><th>招聘页</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${companies}">
+                <td><a th:href="@{/companies/{id}(id=${c.id})}" th:text="${c.name}">公司</a></td>
+                <td th:text="${c.industry != null ? c.industry : '-'}">行业</td>
+                <td th:text="${c.referralCode != null ? c.referralCode : '-'}">内推码</td>
+                <td>
+                    <a th:if="${c.careersUrl != null}" th:href="${c.careersUrl}" target="_blank" rel="noopener">打开</a>
+                    <span th:if="${c.careersUrl == null}" class="muted">-</span>
+                </td>
+                <td class="actions">
+                    <a class="btn btn-sm" th:href="@{/companies/{id}(id=${c.id})}">详情</a>
+                    <a class="btn btn-sm" th:href="@{/companies/{id}/edit(id=${c.id})}">编辑</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${companies.isEmpty()}" class="muted">
+            还没有公司档案，<a th:href="@{/companies/new}">添加第一家目标公司</a>。
+        </p>
+    </div>
+</main>
+</body>
+</html>
