@@ -1,27 +1,45 @@
 # OfferFlow
 
-个人求职管理系统：投递管线、阶段跟进、面试复盘、**目标公司档案**。Spring Boot 单体应用，本地运行，数据保存在 H2 文件中。
+个人求职管理系统：投递管线、阶段跟进、面试复盘、目标公司档案。Spring Boot 单体应用，本地运行，数据保存在 H2 文件中。
 
-## 解决了什么问题
+**技术栈：** Java 17 · Spring Boot 3.3.5 · Thymeleaf · Spring Data JPA · H2 · Gradle
 
-- **A1 投递混乱** — 看板 + 阶段筛选 + 跟进日期 + 逾期高亮 + **本周面试列表** + **投递搜索** + **Markdown 导出**
-- **A2 面试复盘弱（Phase 3/5）** — 带模板新增复盘（Java / 前端 React / Go），预填问题/自评/改进框架
-- **A4 公司信息分散（Phase 2/4/5）** — 目标公司档案库 + 3 套 seed 导入 + 搜索 + 手动公司名关联提示
-- **A3 准备无结构（Phase 3/5）** — 投递详情按模板填充准备清单（Java / 前端 / Go）
+---
 
-## 环境要求
+## 解决什么问题
+
+| 痛点 | 能力 |
+|------|------|
+| **A1 投递混乱** | 仪表盘、阶段筛选、跟进日期、逾期高亮、本周面试列表、投递搜索、Markdown 导出 |
+| **A2 面试复盘弱** | 带模板新增复盘（Java / 前端 React / Go），预填问题、自评、改进框架 |
+| **A3 准备无结构** | 投递详情按模板填充准备清单（仅空清单时写入，不覆盖已有内容） |
+| **A4 公司信息分散** | 目标公司档案库、3 套行业 seed 导入、名称/行业搜索、投递关联、手动公司名关联提示 |
+
+---
+
+## 快速开始
+
+### 环境要求
 
 | 依赖 | 版本 | 说明 |
 |------|------|------|
 | JDK | 17+ | [Eclipse Temurin](https://adoptium.net/) 推荐 |
 | Gradle | — | 使用 Wrapper，无需单独安装 |
 
+### 1. 配置 Java（Windows）
+
+若 `.\gradlew.bat bootRun` 报 `JAVA_HOME is not set`：
+
 ```powershell
-java -version
-# 应显示 openjdk 17.x
+# 确认已安装
+java -version   # 应显示 openjdk 17.x
+
+# 当前会话（路径按本机 JDK 安装位置调整）
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
 ```
 
-## 快速开始
+### 2. 克隆并启动
 
 ```powershell
 git clone https://github.com/leihao-dev/offerflow.git
@@ -29,196 +47,220 @@ cd offerflow
 .\gradlew.bat bootRun
 ```
 
-浏览器打开：**http://localhost:8080** → 进入仪表盘
+浏览器打开 **http://localhost:8080** → 自动进入仪表盘。
 
-### 常用命令
+### 3. 常用命令
 
 ```powershell
 .\gradlew.bat bootRun    # 启动应用
-.\gradlew.bat test       # 运行测试
+.\gradlew.bat test       # 运行测试（13 个测试类）
 .\gradlew.bat build      # 打包
 ```
 
-## 主要页面
+### 常见问题
 
-| 路径 | 功能 |
+| 现象 | 处理 |
 |------|------|
-| `/dashboard` | 进行中 / 本周面试列表 / 逾期跟进 |
-| `/applications` | 投递列表 + 阶段筛选 + 公司/岗位搜索 |
-| `/applications/new` | 新增投递（可选公司档案或手动输入） |
-| `/applications/{id}` | 详情 + 导出 Markdown + 模板选择 + 面试复盘 |
-| `/applications/{id}/export` | 下载该投递的 Markdown 备份 |
-| `/companies` | 目标公司列表 + 搜索 + seed 包下拉导入 |
-| `/companies/new` | 新增公司档案 |
-| `/companies/{id}` | 公司详情（外链、内推、关联投递） |
-| `/h2-console` | H2 数据库控制台（开发调试用） |
+| `JAVA_HOME is not set` | 见上文 §1 |
+| Gradle 下载超时 | 项目已配置腾讯云镜像与 `networkTimeout=120000`（`gradle/wrapper/gradle-wrapper.properties`） |
+| 想清空数据重来 | 停止应用后删除 `./data/` 目录 |
 
-## Phase 2：目标公司档案（Company Dossier）
+---
 
-Phase 2 在 MVP 投递管线之上增加 **A4 公司情报层**，解决「招聘页要一个个查、内推信息难找」的痛点。
+## 推荐使用流程
 
-### 功能概览
+1. **导入公司 seed** — `/companies` → 下拉选择 seed 包（如 `finance-tech`）→ 导入
+2. **新建投递** — `/applications/new` → 从下拉关联公司 → 填写岗位、阶段、跟进日
+3. **面试前** — 投递详情 → 选择面试模板 → 填充准备清单
+4. **面试后** — 详情页「+ 复盘（带模板）」→ 在预填框架上补充实际内容
+5. **日常查看** — 仪表盘看本周面试与逾期；列表用 `?q=` 搜索；需要备份时点「导出 Markdown」
 
-| 能力 | 说明 |
-|------|------|
-| **公司档案 CRUD** | 维护公司名、行业、官网、招聘页、内推码/联系人/方式/链接、调研笔记、面经外链 |
-| **投递关联** | 新增投递时从下拉选择已有公司，或手动输入公司名（兼容旧数据） |
-| **详情页卡片** | 已关联公司的投递详情展示档案摘要，一键打开官网 / 招聘页 / 内推 / 面经 |
-| **双向导航** | 投递列表公司名 → 公司详情；公司详情 → 关联投递列表 |
+---
 
-### 推荐使用流程
+## 功能一览
 
-1. 在 **目标公司** 添加意向公司，填写招聘页 URL 和内推信息
-2. **新增投递** 时从下拉选择该公司，只需填岗位与阶段
-3. 同一公司投多个岗位时，内推/招聘页信息自动复用
+### 投递管线
 
-### 相关 commit（Task 8–10）
+- 投递 CRUD、阶段快速更新、跟进日期与逾期高亮
+- 列表按阶段筛选（`?stage=`）与公司名/岗位搜索（`?q=`），可组合使用
+- 投递详情支持编辑、删除（级联删除关联复盘）
 
-```
-feat(company): add Company domain and service
-feat(company): add company library web pages
-feat(application): link applications to company dossier
-```
+### 仪表盘
 
-设计背景见 [`docs/superpowers/specs/2026-07-11-offerflow-design.md`](docs/superpowers/specs/2026-07-11-offerflow-design.md)（长期愿景 A4 / Phase 5）及 [`docs/superpowers/specs/2026-07-11-offerflow-bugfix-round2-design.md`](docs/superpowers/specs/2026-07-11-offerflow-bugfix-round2-design.md)（Day 2 主路径修复）。
+- 进行中投递数、逾期跟进列表
+- **本周面试列表**：展示本周内有面试记录的投递，可一键跳转详情
 
-## Phase 4：行业 seed 公司包 + 搜索
+### 面试准备与复盘
 
-Phase 4 在 Phase 2 公司档案库之上，解决「从零录入 15–20 家目标公司太费事」的痛点。
+- **准备清单**：详情页下拉选模板 → POST 填充（已有内容时不覆盖）
+- **复盘**：新增/编辑/删除面试记录；支持 `?template=` 预填复盘框架
+- 三套模板：Java 后端、前端 React、Go 后端
 
-### 功能概览
+### 目标公司档案
 
-| 能力 | 说明 |
-|------|------|
-| **Java 后端互联网 seed** | `src/main/resources/seeds/java-backend-internet.json`，约 18 家公司，含招聘页链接 |
-| **一键导入** | 目标公司列表页点击「导入 seed」；已存在公司按名称跳过，不覆盖用户编辑 |
-| **名称搜索** | `GET /companies?q=字节` 模糊匹配公司名，可与 `?industry=` 组合 |
+- 公司 CRUD：官网、招聘页、内推信息、调研笔记、面经外链
+- 投递表单可下拉关联公司，或手动输入公司名（兼容旧数据）
+- 已关联公司的投递详情展示档案卡片与外链
+- 手动输入的公司名若与已有档案重名，保存成功并 flash 提示建议从下拉关联
 
-### 推荐使用流程
+### 数据导出
 
-1. 打开 **目标公司**，点击 **导入 seed** 快速填充互联网大厂档案
-2. 按需编辑内推码、调研笔记等个人字段
-3. 用搜索框或行业筛选定位公司，再 **新增投递** 时从下拉关联
+- `GET /applications/{id}/export` 下载单条投递的 Markdown（含 JD、准备清单、全部复盘）
 
-### 相关 commit（Task 11–13）
+---
 
-```
-feat(company): add seed import service and java-backend seed data
-feat(company): add company name search on list page
-feat(company): add seed import action on company list UI
-```
+## 页面与 API 速查
 
-设计背景见 [`docs/superpowers/specs/2026-07-12-company-seed-design.md`](docs/superpowers/specs/2026-07-12-company-seed-design.md)。
+### 页面路由
 
-## Phase 3：面经 / 准备模板
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/` | 重定向到仪表盘 |
+| GET | `/dashboard` | 仪表盘 |
+| GET | `/applications` | 投递列表（`?stage=` `?q=`） |
+| GET | `/applications/new` | 新建投递表单 |
+| POST | `/applications` | 保存新投递 |
+| GET | `/applications/{id}` | 投递详情 |
+| GET | `/applications/{id}/edit` | 编辑投递 |
+| POST | `/applications/{id}` | 更新投递 |
+| POST | `/applications/{id}/stage` | 快速更新阶段 |
+| POST | `/applications/{id}/delete` | 删除投递 |
+| GET | `/applications/{id}/export` | 下载 Markdown |
+| POST | `/applications/{id}/apply-template` | 填充准备清单（表单字段 `template`） |
+| GET | `/applications/{id}/interviews/new` | 新增复盘（`?template=` 可选） |
+| POST | `/applications/{id}/interviews` | 保存复盘 |
+| GET | `/interviews/{id}/edit` | 编辑复盘 |
+| POST | `/interviews/{id}` | 更新复盘 |
+| POST | `/interviews/{id}/delete` | 删除复盘 |
+| GET | `/companies` | 公司列表（`?q=` `?industry=`） |
+| POST | `/companies/import-seed` | 导入 seed（表单字段 `seed`） |
+| GET | `/companies/new` | 新建公司 |
+| POST | `/companies` | 保存公司 |
+| GET | `/companies/{id}` | 公司详情 |
+| GET | `/companies/{id}/edit` | 编辑公司 |
+| POST | `/companies/{id}` | 更新公司 |
+| POST | `/companies/{id}/delete` | 删除公司（有关联投递时拒绝） |
+| GET | `/h2-console` | H2 控制台（开发调试） |
 
-Phase 3 补全 **A2 + A3**：面试前有结构化的准备清单，面试后有复盘框架可填。
+### 投递阶段
 
-### 功能概览
+| 枚举值 | 显示名 |
+|--------|--------|
+| `APPLIED` | 已投递 |
+| `SCREENING` | 简历筛选 |
+| `TECH_INTERVIEW` | 技术面试 |
+| `FINAL_INTERVIEW` | 终面 |
+| `OFFER` | Offer |
+| `REJECTED` | 已拒绝 |
+| `WITHDRAWN` | 已撤回 |
 
-| 能力 | 说明 |
-|------|------|
-| **准备清单模板** | 投递详情「填充准备清单」；仅空清单时写入 |
-| **复盘框架** | 「新增复盘（带模板）」预填轮次、问题、自评、改进章节 |
+---
 
-### 推荐使用流程
+## Seed 与面试模板包
 
-1. 创建投递 → 详情页点击 **填充准备清单**
-2. 面试后点击 **新增复盘（带模板）** → 在预填框架上补充实际内容
-3. 保存复盘 → 详情页查看历史记录
+### 公司 seed
 
-### 相关 commit（Task 14–16）
+| Pack ID | 标题 | 文件 | 约数量 |
+|---------|------|------|--------|
+| `java-backend-internet` | Java 后端 · 互联网 | `seeds/java-backend-internet.json` | 18 |
+| `finance-tech` | 金融 / 金融科技 | `seeds/finance-tech.json` | 10 |
+| `foreign-tech` | 外企科技 | `seeds/foreign-tech.json` | 10 |
 
-```
-feat(interview): add interview template service and java-backend pack
-feat(application): add prep checklist template fill on detail page
-feat(interview): prefill debrief form from template + web tests
-```
+导入规则：已存在同名公司跳过，**不覆盖**用户已编辑字段。重复导入同一包安全。
 
-设计背景见 [`docs/superpowers/specs/2026-07-12-interview-template-design.md`](docs/superpowers/specs/2026-07-12-interview-template-design.md)。
+### 面试模板
 
-## Phase 5：体验打磨 + 扩展包
+| Pack ID | 文件 |
+|---------|------|
+| `java-backend` | `seeds/java-backend-interview.json` |
+| `frontend-react` | `seeds/frontend-react-interview.json` |
+| `go-backend` | `seeds/go-backend-interview.json` |
 
-Phase 5 补齐 **A1 日常使用摩擦**，并扩展 seed / 模板生态。
+### 如何新增一包（扩展）
 
-### 功能概览
+无需改核心 CRUD，只需 JSON + 注册表：
 
-| 能力 | 说明 |
-|------|------|
-| **本周面试列表** | 仪表盘展示本周面试明细，一键跳转投递详情 |
-| **投递搜索** | `GET /applications?q=美团` 按公司名或岗位模糊匹配，可与阶段筛选组合 |
-| **Markdown 导出** | 投递详情「导出 Markdown」，含 JD、准备清单、全部复盘 |
-| **3 套公司 seed** | 互联网（18）/ 金融科技（10）/ 外企科技（10），列表页下拉选择导入 |
-| **3 套面试模板** | Java 后端 / 前端 React / Go 后端，详情页下拉填充 prep + 带模板复盘 |
-| **公司名关联提示** | 手动输入已存在公司名时 flash 提示从下拉关联（不阻断保存） |
+1. 在 `src/main/resources/seeds/` 添加 JSON 文件
+2. **公司 seed：** 在 `CompanySeedService` 的 `SEED_RESOURCES`、`SEED_TITLES`、`SEED_ORDER` 各加一行
+3. **面试模板：** 在 `InterviewTemplateService` 的 `TEMPLATE_RESOURCES`、`TEMPLATE_ORDER` 各加一行
+4. 运行 `.\gradlew.bat test`，列表/详情页下拉自动出现新包
 
-### Seed / 模板一览
-
-| 类型 | Pack ID | 文件 |
-|------|---------|------|
-| 公司 seed | `java-backend-internet` | `seeds/java-backend-internet.json` |
-| 公司 seed | `finance-tech` | `seeds/finance-tech.json` |
-| 公司 seed | `foreign-tech` | `seeds/foreign-tech.json` |
-| 面试模板 | `java-backend` | `seeds/java-backend-interview.json` |
-| 面试模板 | `frontend-react` | `seeds/frontend-react-interview.json` |
-| 面试模板 | `go-backend` | `seeds/go-backend-interview.json` |
-
-### 相关 commit（Task 17–25）
-
-```
-feat(application): add application search on list page
-feat(dashboard): add this week interviews list
-feat(application): add markdown export for application detail
-feat(company): add finance and foreign tech seed packs
-feat(company): add seed pack selector on company list
-feat(interview): add frontend and go interview template packs
-feat(application): add interview template selector on detail page
-feat(application): suggest linking manual company name to dossier
-docs: document Phase 5 polish and expansion packs
-```
-
-设计背景见 [`docs/superpowers/specs/2026-07-12-phase5-polish-expansion-design.md`](docs/superpowers/specs/2026-07-12-phase5-polish-expansion-design.md)。
+---
 
 ## 数据存储
 
-H2 文件数据库位于 `./data/offerflow.*`。删除 `data/` 目录可重置全部数据。
+- H2 文件库：`jdbc:h2:file:./data/offerflow`（配置见 `application.yml`）
+- 删除 `./data/` 可重置全部数据
+- H2 控制台：http://localhost:8080/h2-console（JDBC URL 与 `application.yml` 一致）
+
+---
 
 ## 项目结构
 
 ```
 offerflow/
-├── build.gradle              # Gradle 构建
-├── src/main/java/            # Java 源码
-│   └── com/offerflow/
-│       ├── controller/       # Web 路由
-│       ├── service/          # 业务逻辑
-│       ├── model/            # JPA 实体（JobApplication、Company、InterviewNote）
-│       └── repository/       # 数据访问
+├── build.gradle
+├── src/main/java/com/offerflow/
+│   ├── controller/       # Web 路由
+│   ├── service/          # 业务逻辑（含 Seed / Template / Export）
+│   ├── model/            # JPA 实体：JobApplication、Company、InterviewNote
+│   ├── repository/       # 数据访问
+│   ├── dto/              # 表单与 seed/template 传输对象
+│   ├── web/              # StageLabels、FlashMessages、异常处理
+│   └── support/          # FollowUpRules 等
 ├── src/main/resources/
-│   ├── templates/            # Thymeleaf 页面
-│   ├── seeds/                # 公司 seed + 面试模板 JSON
-│   └── static/css/           # 样式
-├── src/test/java/            # 单元测试
-├── .claude/                  # CC 技能与 hooks
-├── docs/superpowers/         # 设计规格与实现计划
+│   ├── application.yml
+│   ├── templates/        # Thymeleaf 页面
+│   ├── seeds/            # 公司 seed + 面试模板 JSON
+│   └── static/css/       # 样式
+├── src/test/java/        # 单元与 Web 冒烟测试
+├── .claude/              # CC 技能与 hooks
+├── docs/superpowers/     # 设计规格与实现计划
 ├── README.md
-└── JOURNAL.md                # CC 周挑战开发日记
+└── JOURNAL.md            # CC 周挑战开发日记
 ```
 
-## CC 配置（`.claude/`）
-
-| 文件 | 作用 |
-|------|------|
-| `skills/offerflow-coach/SKILL.md` | 引导投递录入与面试复盘 |
-| `hooks/hooks.json` | 会话开始时提醒记录 |
+---
 
 ## CC 周挑战
 
-本项目为 CC 一周挑战作业，使用 **Cursor + Superpowers + Waza** 开发。开发过程见 [`JOURNAL.md`](JOURNAL.md)。
+本项目为 CC 一周挑战作业，使用 **Cursor + Superpowers + Waza** 开发。
 
-## 技术栈
+| 产物 | 路径 |
+|------|------|
+| 开发日记 | [`JOURNAL.md`](JOURNAL.md) |
+| 投递教练 skill | `.claude/skills/offerflow-coach/SKILL.md` |
+| 会话提醒 hook | `.claude/hooks/hooks.json` |
 
-Java 17 · Spring Boot 3.3 · Thymeleaf · Spring Data JPA · H2 · Gradle
+工作流：brainstorming 写 spec → writing-plans 拆 Task → 增量 commit。详细过程与反思见 JOURNAL。
+
+### 设计文档索引
+
+| 文档 | 内容 |
+|------|------|
+| [`2026-07-11-offerflow-design.md`](docs/superpowers/specs/2026-07-11-offerflow-design.md) | MVP 与长期愿景 |
+| [`2026-07-11-offerflow-bugfix-round2-design.md`](docs/superpowers/specs/2026-07-11-offerflow-bugfix-round2-design.md) | Day 2 主路径 bug 修复 |
+| [`2026-07-12-company-seed-design.md`](docs/superpowers/specs/2026-07-12-company-seed-design.md) | Phase 4 公司 seed |
+| [`2026-07-12-interview-template-design.md`](docs/superpowers/specs/2026-07-12-interview-template-design.md) | Phase 3 面试模板 |
+| [`2026-07-12-phase5-polish-expansion-design.md`](docs/superpowers/specs/2026-07-12-phase5-polish-expansion-design.md) | Phase 5 打磨与扩展包 |
+
+实现计划见 [`docs/superpowers/plans/`](docs/superpowers/plans/)。
+
+---
+
+## 演进历史
+
+| 阶段 | 范围 | 关键交付 |
+|------|------|----------|
+| MVP + 四轮打磨 | A1/A2 核心 | 投递 CRUD、复盘、仪表盘、UI/异常修复 |
+| Phase 2 | A4 | 公司档案库、投递关联、详情卡片 |
+| Phase 3 | A2/A3 | 面试准备清单与复盘模板（Java 后端首包） |
+| Phase 4 | A4 | 互联网 seed、公司搜索、seed 导入 UI |
+| Phase 5 | A1 + 扩展 | 投递搜索、本周面试、Markdown 导出、3 seed + 3 模板下拉、公司名提示 |
+
+完整 commit 历史：`git log --oneline`。
+
+---
 
 ## 后续规划
 
@@ -228,6 +270,3 @@ Java 17 · Spring Boot 3.3 · Thymeleaf · Spring Data JPA · H2 · Gradle
 - 移动端 App
 - 邮件/微信提醒逾期跟进
 
-## License
-
-MIT
