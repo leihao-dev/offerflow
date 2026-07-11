@@ -5,8 +5,10 @@ import com.offerflow.dto.ApplyPrepResult;
 import com.offerflow.dto.DebriefTemplate;
 import com.offerflow.dto.InterviewNoteForm;
 import com.offerflow.dto.InterviewTemplatePack;
+import com.offerflow.dto.TemplatePackInfo;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -17,9 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class InterviewTemplateService {
 
     public static final String JAVA_BACKEND = "java-backend";
+    public static final String FRONTEND_REACT = "frontend-react";
+    public static final String GO_BACKEND = "go-backend";
 
     private static final Map<String, String> TEMPLATE_RESOURCES = Map.of(
-            JAVA_BACKEND, "seeds/java-backend-interview.json");
+            JAVA_BACKEND, "seeds/java-backend-interview.json",
+            FRONTEND_REACT, "seeds/frontend-react-interview.json",
+            GO_BACKEND, "seeds/go-backend-interview.json");
+
+    private static final List<String> TEMPLATE_ORDER =
+            List.of(JAVA_BACKEND, FRONTEND_REACT, GO_BACKEND);
 
     private final JobApplicationService applicationService;
     private final ObjectMapper objectMapper;
@@ -32,6 +41,16 @@ public class InterviewTemplateService {
     @Transactional(readOnly = true)
     public InterviewTemplatePack requirePack(String templateId) {
         return loadPack(resolveResourcePath(templateId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<TemplatePackInfo> listAvailableTemplates() {
+        return TEMPLATE_ORDER.stream()
+                .map(id -> {
+                    InterviewTemplatePack pack = requirePack(id);
+                    return new TemplatePackInfo(id, pack.title());
+                })
+                .toList();
     }
 
     public ApplyPrepResult applyPrepChecklist(Long applicationId, String templateId) {

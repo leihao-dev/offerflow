@@ -1,0 +1,11 @@
+{
+  "id": "go-backend",
+  "title": "Go 后端",
+  "prepChecklist": "□ goroutine / channel / select\n□ GC 与内存逃逸分析\n□ interface 与反射\n□ 并发安全：mutex、atomic、WaitGroup\n□ HTTP / gRPC 服务设计\n□ MySQL 索引与事务\n□ Redis 缓存策略\n□ 微服务：注册发现、限流熔断\n□ 项目：亮点 + 难点 + QPS/延迟数据\n□ 算法：1 道中等题",
+  "debrief": {
+    "roundLabel": "技术面",
+    "questionsAsked": "## Go 基础 / 并发\n- \n\n## 项目 / 系统设计\n- \n\n## 算法\n- ",
+    "selfAssessment": "## 答得好的\n- \n\n## 卡壳的\n- \n\n## 整体自评（1-5 分）\n",
+    "improvements": "- 待补知识点：\n- 表达方式改进：\n- 下次模拟："
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "frontend-react",
+  "title": "前端 React",
+  "prepChecklist": "□ React：生命周期、Hooks、受控/非受控组件\n□ 虚拟 DOM 与 Diff 算法\n□ 状态管理：Context / Redux 思路\n□ 性能优化：memo、useMemo、懒加载\n□ 浏览器：事件循环、渲染流程、跨域\n□ CSS：Flex/Grid、BFC、响应式\n□ TypeScript：泛型、类型收窄\n□ 工程化：Vite/Webpack、ESLint、CI\n□ 手写：防抖节流、深拷贝、Promise\n□ 项目：亮点 + 难点 + 性能指标\n□ 算法：1 道中等题（数组/链表）",
+  "debrief": {
+    "roundLabel": "技术面",
+    "questionsAsked": "## 基础 / React\n- \n\n## 手写 / 算法\n- \n\n## 项目 / 工程化\n- ",
+    "selfAssessment": "## 答得好的\n- \n\n## 卡壳的\n- \n\n## 整体自评（1-5 分）\n",
+    "improvements": "- 待补知识点：\n- 代码表达改进：\n- 下次练习："
+  }
+}

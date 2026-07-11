@@ -86,6 +86,26 @@ class InterviewTemplateServiceTest {
     }
 
     @Test
+    void loadFrontendReactPack() {
+        var pack = templateService.requirePack(InterviewTemplateService.FRONTEND_REACT);
+
+        assertEquals("前端 React", pack.title());
+        assertTrue(pack.prepChecklist().contains("Hooks"));
+    }
+
+    @Test
+    void loadGoBackendPack() {
+        var pack = templateService.requirePack(InterviewTemplateService.GO_BACKEND);
+
+        assertTrue(pack.prepChecklist().contains("goroutine"));
+    }
+
+    @Test
+    void listAvailableTemplatesIncludesAllPacks() {
+        assertEquals(3, templateService.listAvailableTemplates().size());
+    }
+
+    @Test
     void rejectsUnknownTemplateId() {
         assertThrows(
                 UnknownInterviewTemplateException.class,
