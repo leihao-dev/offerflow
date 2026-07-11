@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${pageTitle + ' · OfferFlow'}">表单</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header>
+    <nav>
+        <a class="brand" th:href="@{/}">OfferFlow</a>
+        <a th:href="@{/}">首页</a>
+        <a th:href="@{/applications}">投递列表</a>
+        <a class="btn btn-primary" th:href="@{/applications/new}">+ 新增投递</a>
+    </nav>
+</header>
+<main class="container">
+    <h1 th:text="${pageTitle}">表单</h1>
+    <div class="card">
+        <form th:action="${form.id != null} ? @{/applications/{id}(id=${form.id})} : @{/applications}"
+              method="post" th:object="${form}">
+            <input type="hidden" th:field="*{id}"/>
+
+            <label for="companyName">公司名称 *</label>
+            <input id="companyName" th:field="*{companyName}"/>
+            <div class="error" th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></div>
+
+            <label for="positionTitle">岗位名称 *</label>
+            <input id="positionTitle" th:field="*{positionTitle}"/>
+            <div class="error" th:if="${#fields.hasErrors('positionTitle')}" th:errors="*{positionTitle}"></div>
+
+            <label for="source">投递渠道</label>
+            <input id="source" th:field="*{source}" placeholder="Boss / 内推 / 官网"/>
+
+            <label for="stage">当前阶段 *</label>
+            <select id="stage" th:field="*{stage}">
+                <option th:each="s : ${stages}" th:value="${s}" th:text="${stageLabels[s]}"></option>
+            </select>
+
+            <label for="appliedAt">投递日期 *</label>
+            <input id="appliedAt" type="date" th:field="*{appliedAt}"/>
+
+            <label for="nextFollowUpAt">下次跟进日期</label>
+            <input id="nextFollowUpAt" type="date" th:field="*{nextFollowUpAt}"/>
+
+            <label for="salaryRange">薪资范围</label>
+            <input id="salaryRange" th:field="*{salaryRange}" placeholder="20-30K"/>
+
+            <label for="jdContent">JD 原文</label>
+            <textarea id="jdContent" th:field="*{jdContent}"></textarea>
+
+            <label for="companyNotes">公司调研笔记</label>
+            <textarea id="companyNotes" th:field="*{companyNotes}"></textarea>
+
+            <label for="prepChecklist">准备清单（每行一项）</label>
+            <textarea id="prepChecklist" th:field="*{prepChecklist}"></textarea>
+
+            <label>
+                <input type="checkbox" th:field="*{prepDone}"/> 准备工作已完成
+            </label>
+
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">保存</button>
+                <a class="btn" th:href="${form.id != null} ? @{/applications/{id}(id=${form.id})} : @{/applications}">取消</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

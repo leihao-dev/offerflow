@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>投递列表 · OfferFlow</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header>
+    <nav>
+        <a class="brand" th:href="@{/}">OfferFlow</a>
+        <a th:href="@{/}">首页</a>
+        <a th:href="@{/applications}">投递列表</a>
+        <a class="btn btn-primary" th:href="@{/applications/new}">+ 新增投递</a>
+    </nav>
+</header>
+<main class="container">
+    <h1>投递列表</h1>
+
+    <div class="actions">
+        <a class="btn" th:classappend="${selectedStage == null} ? ' btn-primary'" th:href="@{/applications}">全部</a>
+        <a class="btn btn-sm" th:each="s : ${stages}"
+           th:classappend="${selectedStage == s} ? ' btn-primary'"
+           th:href="@{/applications(stage=${s})}"
+           th:text="${stageLabels[s]}">阶段</a>
+    </div>
+
+    <div class="card">
+        <table th:if="${!applications.isEmpty()}">
+            <thead>
+            <tr><th>公司</th><th>岗位</th><th>阶段</th><th>投递日</th><th>下次跟进</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="app : ${applications}">
+                <td th:text="${app.companyName}">公司</td>
+                <td th:text="${app.positionTitle}">岗位</td>
+                <td><span class="badge" th:text="${stageLabels[app.stage]}">阶段</span></td>
+                <td th:text="${app.appliedAt}">日期</td>
+                <td th:text="${app.nextFollowUpAt != null ? app.nextFollowUpAt : '-'}">跟进</td>
+                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">详情</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${applications.isEmpty()}" class="muted">暂无记录。</p>
+    </div>
+</main>
+</body>
+</html>
