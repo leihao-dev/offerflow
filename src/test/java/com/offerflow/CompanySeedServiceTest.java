@@ -49,6 +49,26 @@ class CompanySeedServiceTest {
     }
 
     @Test
+    void financeTechSeedContainsTenCompanies() {
+        assertEquals(10, seedService.countSeedEntries(CompanySeedService.FINANCE_TECH));
+    }
+
+    @Test
+    void foreignTechSeedImportsIdempotently() {
+        SeedImportResult first = seedService.importSeed(CompanySeedService.FOREIGN_TECH);
+        assertEquals(10, first.imported());
+
+        SeedImportResult second = seedService.importSeed(CompanySeedService.FOREIGN_TECH);
+        assertEquals(0, second.imported());
+        assertEquals(10, second.skipped());
+    }
+
+    @Test
+    void listAvailableSeedsIncludesAllPacks() {
+        assertEquals(3, seedService.listAvailableSeeds().size());
+    }
+
+    @Test
     void rejectsUnknownSeedId() {
         assertThrows(UnknownCompanySeedException.class, () -> seedService.importSeed("unknown-pack"));
     }

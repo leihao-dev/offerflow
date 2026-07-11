@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.offerflow.dto.CompanyForm;
 import com.offerflow.dto.CompanySeedEntry;
 import com.offerflow.dto.SeedImportResult;
+import com.offerflow.dto.SeedPackInfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -18,9 +19,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanySeedService {
 
     public static final String JAVA_BACKEND_INTERNET = "java-backend-internet";
+    public static final String FINANCE_TECH = "finance-tech";
+    public static final String FOREIGN_TECH = "foreign-tech";
 
     private static final Map<String, String> SEED_RESOURCES = Map.of(
-            JAVA_BACKEND_INTERNET, "seeds/java-backend-internet.json");
+            JAVA_BACKEND_INTERNET, "seeds/java-backend-internet.json",
+            FINANCE_TECH, "seeds/finance-tech.json",
+            FOREIGN_TECH, "seeds/foreign-tech.json");
+
+    private static final Map<String, String> SEED_TITLES = Map.of(
+            JAVA_BACKEND_INTERNET, "Java 后端 · 互联网",
+            FINANCE_TECH, "金融 / 金融科技",
+            FOREIGN_TECH, "外企科技");
+
+    private static final List<String> SEED_ORDER =
+            List.of(JAVA_BACKEND_INTERNET, FINANCE_TECH, FOREIGN_TECH);
 
     private final CompanyService companyService;
     private final ObjectMapper objectMapper;
@@ -33,6 +46,13 @@ public class CompanySeedService {
     @Transactional(readOnly = true)
     public int countSeedEntries(String seedId) {
         return loadEntries(resolveSeedPath(seedId)).size();
+    }
+
+    @Transactional(readOnly = true)
+    public List<SeedPackInfo> listAvailableSeeds() {
+        return SEED_ORDER.stream()
+                .map(id -> new SeedPackInfo(id, SEED_TITLES.get(id), countSeedEntries(id)))
+                .toList();
     }
 
     public SeedImportResult importSeed(String seedId) {

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "蚂蚁集团",
+    "industry": "金融科技",
+    "websiteUrl": "https://www.antgroup.com",
+    "careersUrl": "https://talent.antgroup.com",
+    "referralNotes": "蚂蚁集团招聘官网；内推信息请在导入后自行填写"
+  },
+  {
+    "name": "微众银行",
+    "industry": "金融科技",
+    "websiteUrl": "https://www.webank.com",
+    "careersUrl": "https://hr.webank.com",
+    "referralNotes": "微众银行招聘官网"
+  },
+  {
+    "name": "京东科技",
+    "industry": "金融科技",
+    "websiteUrl": "https://www.jdcloud.com",
+    "careersUrl": "https://zhaopin.jd.com",
+    "referralNotes": "京东集团招聘（含科技岗位）"
+  },
+  {
+    "name": "平安科技",
+    "industry": "金融科技",
+    "websiteUrl": "https://tech.pingan.com",
+    "careersUrl": "https://hr.pingan.com",
+    "referralNotes": "平安集团招聘官网"
+  },
+  {
+    "name": "东方财富",
+    "industry": "金融科技",
+    "websiteUrl": "https://www.eastmoney.com",
+    "careersUrl": "https://job.eastmoney.com",
+    "referralNotes": "东方财富招聘官网"
+  },
+  {
+    "name": "同花顺",
+    "industry": "金融科技",
+    "websiteUrl": "https://www.10jqka.com.cn",
+    "careersUrl": "https://job.10jqka.com.cn",
+    "referralNotes": "同花顺招聘官网"
+  },
+  {
+    "name": "恒生电子",
+    "industry": "金融科技",
+    "websiteUrl": "https://www.hundsun.com",
+    "careersUrl": "https://campus.hundsun.com",
+    "referralNotes": "恒生电子招聘官网"
+  },
+  {
+    "name": "富途控股",
+    "industry": "金融科技",
+    "websiteUrl": "https://www.futuholdings.com",
+    "careersUrl": "https://www.futuhk.com/careers",
+    "referralNotes": "富途招聘官网"
+  },
+  {
+    "name": "雪球",
+    "industry": "金融科技",
+    "websiteUrl": "https://xueqiu.com",
+    "careersUrl": "https://xueqiu.com/about/jobs",
+    "referralNotes": "雪球招聘官网"
+  },
+  {
+    "name": "陆金所",
+    "industry": "金融科技",
+    "websiteUrl": "https://www.lu.com",
+    "careersUrl": "https://talent.lu.com",
+    "referralNotes": "陆金所招聘官网"
+  }
+]

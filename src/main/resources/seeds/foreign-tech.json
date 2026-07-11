@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Microsoft",
+    "industry": "外企科技",
+    "websiteUrl": "https://www.microsoft.com",
+    "careersUrl": "https://careers.microsoft.com",
+    "referralNotes": "Microsoft Careers；内推请在导入后自行填写"
+  },
+  {
+    "name": "Google",
+    "industry": "外企科技",
+    "websiteUrl": "https://www.google.com",
+    "careersUrl": "https://www.google.com/about/careers",
+    "referralNotes": "Google Careers"
+  },
+  {
+    "name": "Amazon",
+    "industry": "外企科技",
+    "websiteUrl": "https://www.amazon.com",
+    "careersUrl": "https://www.amazon.jobs",
+    "referralNotes": "Amazon Jobs"
+  },
+  {
+    "name": "Apple",
+    "industry": "外企科技",
+    "websiteUrl": "https://www.apple.com",
+    "careersUrl": "https://jobs.apple.com",
+    "referralNotes": "Apple Jobs"
+  },
+  {
+    "name": "Meta",
+    "industry": "外企科技",
+    "websiteUrl": "https://about.meta.com",
+    "careersUrl": "https://www.metacareers.com",
+    "referralNotes": "Meta Careers"
+  },
+  {
+    "name": "NVIDIA",
+    "industry": "外企科技",
+    "websiteUrl": "https://www.nvidia.com",
+    "careersUrl": "https://www.nvidia.com/en-us/about-nvidia/careers",
+    "referralNotes": "NVIDIA Careers"
+  },
+  {
+    "name": "SAP",
+    "industry": "外企科技",
+    "websiteUrl": "https://www.sap.com",
+    "careersUrl": "https://jobs.sap.com",
+    "referralNotes": "SAP Careers"
+  },
+  {
+    "name": "Intel",
+    "industry": "外企科技",
+    "websiteUrl": "https://www.intel.com",
+    "careersUrl": "https://jobs.intel.com",
+    "referralNotes": "Intel Careers"
+  },
+  {
+    "name": "Shopee",
+    "industry": "外企科技",
+    "websiteUrl": "https://shopee.com",
+    "careersUrl": "https://careers.shopee.com",
+    "referralNotes": "Shopee Careers"
+  },
+  {
+    "name": "LinkedIn",
+    "industry": "外企科技",
+    "websiteUrl": "https://www.linkedin.com",
+    "careersUrl": "https://careers.linkedin.com",
+    "referralNotes": "LinkedIn Careers"
+  }
+]
