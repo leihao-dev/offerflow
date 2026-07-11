@@ -1,10 +1,13 @@
 package com.offerflow.controller;
 
 import com.offerflow.dto.ApplicationForm;
+import com.offerflow.dto.ApplyPrepResult;
 import com.offerflow.model.ApplicationStage;
 import com.offerflow.model.JobApplication;
 import com.offerflow.service.CompanyService;
+import com.offerflow.service.InterviewTemplateService;
 import com.offerflow.service.JobApplicationService;
+import com.offerflow.service.UnknownInterviewTemplateException;
 import com.offerflow.web.FlashMessages;
 import com.offerflow.web.StageLabels;
 import jakarta.validation.Valid;
@@ -27,10 +30,15 @@ public class ApplicationController {
 
     private final JobApplicationService applicationService;
     private final CompanyService companyService;
+    private final InterviewTemplateService interviewTemplateService;
 
-    public ApplicationController(JobApplicationService applicationService, CompanyService companyService) {
+    public ApplicationController(
+            JobApplicationService applicationService,
+            CompanyService companyService,
+            InterviewTemplateService interviewTemplateService) {
         this.applicationService = applicationService;
         this.companyService = companyService;
+        this.interviewTemplateService = interviewTemplateService;
     }
 
     @GetMapping
@@ -73,6 +81,25 @@ public class ApplicationController {
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
         return "applications/detail";
+    }
+
+    @PostMapping("/{id}/apply-template")
+    public String applyTemplate(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = InterviewTemplateService.JAVA_BACKEND) String template,
+            RedirectAttributes redirectAttributes) {
+        try {
+            ApplyPrepResult result = interviewTemplateService.applyPrepChecklist(id, template);
+            if (result.applied()) {
+                redirectAttributes.addFlashAttribute(FlashMessages.SUCCESS, "已填充准备清单。");
+            } else {
+                redirectAttributes.addFlashAttribute(
+                        FlashMessages.SUCCESS, "准备清单已有内容，未覆盖。");
+            }
+        } catch (UnknownInterviewTemplateException ex) {
+            redirectAttributes.addFlashAttribute(FlashMessages.ERROR, "模板不存在：" + template);
+        }
+        return "redirect:/applications/" + id;
     }
 
     @GetMapping("/{id}/edit")
