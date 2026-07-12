@@ -24,6 +24,10 @@ public class InterviewSearchController {
         model.addAttribute("hasQuery", hasQuery);
         if (hasQuery) {
             model.addAttribute("hits", searchService.search(q));
+            model.addAttribute("showingRecent", false);
+        } else {
+            model.addAttribute("hits", searchService.listRecent());
+            model.addAttribute("showingRecent", true);
         }
         return "interviews/search";
     }

@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: shell('interviews-search', '复盘搜索', '跨全部投递搜索面试复盘内容。', null, ~{::#pageBody})}">
+      th:replace="~{fragments/layout :: shell('interviews-search', '复盘记录', '浏览与搜索全部面试复盘。', null, ~{::#pageBody})}">
 <body>
 <th:block id="pageBody">
-    <p class="muted" th:if="${!hasQuery}">输入关键词搜索全部面试复盘（问题、自评、改进、公司名、岗位）。</p>
+    <div class="filter-banner" th:if="${hasQuery}">
+        <span>正在搜索「<span th:text="${searchQuery}"></span>」</span>
+        <a class="btn btn-text btn-sm" th:href="@{/interviews/search}">查看全部</a>
+    </div>
 
     <div class="card">
         <form class="toolbar" method="get" th:action="@{/interviews/search}">
@@ -14,11 +17,11 @@
         </form>
     </div>
 
-    <div th:if="${hasQuery and #lists.isEmpty(hits)}" class="card empty-state">
-        没有匹配「<span th:text="${searchQuery}"></span>」的复盘。
-    </div>
+    <p class="muted" th:if="${showingRecent and !#lists.isEmpty(hits)}">
+        显示最近 50 条复盘，输入关键词可搜索全部记录。
+    </p>
 
-    <div th:if="${hasQuery and !#lists.isEmpty(hits)}" class="card">
+    <div class="card" th:if="${!#lists.isEmpty(hits)}">
         <table class="data-table">
             <thead>
             <tr><th>日期</th><th>公司 · 岗位</th><th>轮次</th><th>摘要</th><th></th></tr>
@@ -32,10 +35,25 @@
                 </td>
                 <td th:text="${hit.roundLabel() != null ? hit.roundLabel() : '-'}">轮次</td>
                 <td class="muted" th:text="${hit.snippet()}">摘要</td>
-                <td><a class="btn btn-text btn-sm" th:href="@{/applications/{id}(id=${hit.applicationId()})}">查看投递</a></td>
+                <td class="actions">
+                    <a class="btn btn-text btn-sm"
+                       th:href="@{/applications/{id}(id=${hit.applicationId()})} + '#note-' + ${hit.noteId()}">详情</a>
+                    <a class="btn btn-text btn-sm"
+                       th:href="@{/interviews/{id}/edit(id=${hit.noteId()})}">编辑</a>
+                </td>
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <div th:if="${#lists.isEmpty(hits) and hasQuery}" class="card empty-state">
+        <p>没有匹配「<span th:text="${searchQuery}"></span>」的复盘</p>
+        <a class="btn btn-text" th:href="@{/interviews/search}">查看全部</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(hits) and !hasQuery}" class="card empty-state">
+        <p>还没有面试复盘</p>
+        <a class="btn btn-primary" th:href="@{/applications}">去投递列表添加</a>
     </div>
 </th:block>
 </body>
