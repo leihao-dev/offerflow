@@ -1,6 +1,6 @@
 # OfferFlow
 
-个人求职管理系统：投递管线、阶段跟进、面试复盘、目标公司档案。Spring Boot 单体应用，本地运行，数据保存在 H2 文件中。
+个人求职管理系统：投递管线、阶段跟进、面试复盘、目标公司档案。Spring Boot 单体应用，本地运行，数据保存在 H2 文件中。飞书风侧栏布局 + 响应式 UI（Phase 7）。
 
 **技术栈：** Java 17 · Spring Boot 3.3.5 · Thymeleaf · Spring Data JPA · H2 · Gradle
 
@@ -53,7 +53,7 @@ cd offerflow
 
 ```powershell
 .\gradlew.bat bootRun    # 启动应用
-.\gradlew.bat test       # 运行测试（16 个测试类）
+.\gradlew.bat test       # 运行测试（18 个测试类）
 .\gradlew.bat build      # 打包
 ```
 
@@ -64,6 +64,7 @@ cd offerflow
 | `JAVA_HOME is not set` | 见上文 §1 |
 | Gradle 下载超时 | 项目已配置腾讯云镜像与 `networkTimeout=120000`（`gradle/wrapper/gradle-wrapper.properties`） |
 | 想清空数据重来 | 停止应用后删除 `./data/` 目录 |
+| `Database may be already in use` | 已有 `bootRun` 在跑；关掉旧进程或只保留一个实例 |
 
 ---
 
@@ -73,7 +74,16 @@ cd offerflow
 2. **新建投递** — `/applications/new` → 从下拉关联公司 → 填写岗位、阶段、跟进日
 3. **面试前** — 投递详情 → **预览**面试模板 → 填充准备清单
 4. **面试后** — 详情页「+ 复盘（带模板）」→ 在预填框架上补充实际内容
-5. **日常查看** — 仪表盘看本周面试与逾期；列表 `?q=` 搜索；**复盘搜索**跨投递检索；单条或 **zip 批量** 导出 Markdown
+5. **日常查看** — 仪表盘可点统计卡跳转；列表 `?q=` / `?overdue=1` 筛选；**复盘搜索**跨投递检索；单条或 **zip 批量** 导出 Markdown
+
+---
+
+## 界面与体验（Phase 7）
+
+- **布局**：桌面左侧边栏导航；窄屏（≤768px）汉堡菜单 + 抽屉
+- **设计系统**：飞书风色板（`tokens.css` / `layout.css` / `components.css`），阶段色点徽章
+- **仪表盘**：可点击统计卡（进行中 / 本周面试 / 逾期 → 列表或 `?overdue=1`）
+- **投递列表**：工具栏搜索 + 阶段 chips + 逾期筛选；sticky 表头、行 hover
 
 ---
 
@@ -82,13 +92,14 @@ cd offerflow
 ### 投递管线
 
 - 投递 CRUD、阶段快速更新、跟进日期与逾期高亮
-- 列表按阶段筛选（`?stage=`）与公司名/岗位搜索（`?q=`），可组合使用
+- 列表按阶段筛选（`?stage=`）、逾期筛选（`?overdue=1`）与公司名/岗位搜索（`?q=`），可组合使用
 - 投递详情支持编辑、删除（级联删除关联复盘）
 
 ### 仪表盘
 
-- 进行中投递数、逾期跟进列表
+- 进行中投递数、本周面试数、逾期未跟进数（统计卡可点击跳转）
 - **本周面试列表**：展示本周内有面试记录的投递，可一键跳转详情
+- **待跟进列表**：逾期投递高亮，阶段色点 + 快速进入详情
 
 ### 面试准备与复盘
 
@@ -120,7 +131,7 @@ cd offerflow
 |------|------|------|
 | GET | `/` | 重定向到仪表盘 |
 | GET | `/dashboard` | 仪表盘 |
-| GET | `/applications` | 投递列表（`?stage=` `?q=`） |
+| GET | `/applications` | 投递列表（`?stage=` `?q=` `?overdue=1`） |
 | GET | `/applications/new` | 新建投递表单 |
 | POST | `/applications` | 保存新投递 |
 | GET | `/applications/{id}` | 投递详情 |
@@ -212,13 +223,15 @@ offerflow/
 │   ├── model/            # JPA 实体：JobApplication、Company、InterviewNote
 │   ├── repository/       # 数据访问
 │   ├── dto/              # 表单与 seed/template 传输对象
-│   ├── web/              # StageLabels、FlashMessages、异常处理
+│   ├── web/              # StageLabels、StageStyles、FlashMessages、异常处理
 │   └── support/          # FollowUpRules、ExportLimits 等
 ├── src/main/resources/
 │   ├── application.yml
-│   ├── templates/        # Thymeleaf 页面
+│   ├── templates/        # Thymeleaf 页面与 layout/sidebar fragments
 │   ├── seeds/            # 公司 seed + 面试模板 JSON
-│   └── static/css/       # 样式
+│   └── static/
+│       ├── css/          # tokens / layout / components
+│       └── js/           # app-shell.js（移动端侧栏）
 ├── src/test/java/        # 单元与 Web 冒烟测试
 ├── .claude/              # CC 技能与 hooks
 ├── docs/superpowers/     # 设计规格与实现计划
@@ -250,6 +263,7 @@ offerflow/
 | [`2026-07-12-interview-template-design.md`](docs/superpowers/specs/2026-07-12-interview-template-design.md) | Phase 3 面试模板 |
 | [`2026-07-12-phase5-polish-expansion-design.md`](docs/superpowers/specs/2026-07-12-phase5-polish-expansion-design.md) | Phase 5 打磨与扩展包 |
 | [`2026-07-12-phase6-knowledge-portability-design.md`](docs/superpowers/specs/2026-07-12-phase6-knowledge-portability-design.md) | Phase 6 知识库与便携性 |
+| [`2026-07-12-phase7-ux-enhancement-design.md`](docs/superpowers/specs/2026-07-12-phase7-ux-enhancement-design.md) | Phase 7 UX 增强（飞书风侧栏） |
 
 实现计划见 [`docs/superpowers/plans/`](docs/superpowers/plans/)。
 
@@ -265,6 +279,7 @@ offerflow/
 | Phase 4 | A4 | 互联网 seed、公司搜索、seed 导入 UI |
 | Phase 5 | A1 + 扩展 | 投递搜索、本周面试、Markdown 导出、3 seed + 3 模板下拉、公司名提示 |
 | Phase 6 | A2 + 便携 + 发现性 | 复盘全文搜索、批量 zip 导出、seed/模板预览 |
+| Phase 7 | UX | 飞书风设计系统、侧栏布局、仪表盘/列表改版、`?overdue=1` |
 
 完整 commit 历史：`git log --oneline`。
 
@@ -272,6 +287,7 @@ offerflow/
 
 ## 后续规划
 
+- 看板视图 / 拖拽改阶段（Phase 8）
 - 间隔重复复习（面经/错题）
 - JSON 备份导入恢复
 - 用户账号 + MySQL 云同步

@@ -58,6 +58,10 @@
   - `2026-07-12-phase6-knowledge-portability-design.md` + implementation plan
   - 复盘全文搜索 `/interviews/search`、批量 Markdown zip、seed/模板预览
   - README 更新 Phase 6 文档（Task 30）
+- **Phase 7（UX 增强，Task 31–40）：**
+  - `2026-07-12-phase7-ux-enhancement-design.md` + implementation plan
+  - 飞书风设计系统、侧栏布局、仪表盘/列表门面页、`?overdue=1`
+  - README 更新 Phase 7 文档（Task 40）
 - **待手动完成（见 plan Task 1–6、8–9）：**
   - `.\gradlew.bat test` 基线
   - 全站手动 QA（清单见 wrap-up spec §3）
