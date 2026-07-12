@@ -154,4 +154,18 @@ class ApplicationWebTest {
                 .andExpect(content().string(containsString("美团")))
                 .andExpect(content().string(containsString("type=\"search\"")));
     }
+
+    @Test
+    void exportAllReturnsZipWhenApplicationsExist() throws Exception {
+        mockMvc.perform(post("/applications")
+                        .param("companyName", "ZipCo")
+                        .param("positionTitle", "Dev")
+                        .param("stage", "APPLIED")
+                        .param("appliedAt", "2026-07-12"))
+                .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(get("/applications/export-all"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", containsString(".zip")));
+    }
 }

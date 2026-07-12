@@ -4,6 +4,7 @@ import com.offerflow.dto.ApplicationForm;
 import com.offerflow.dto.ApplyPrepResult;
 import com.offerflow.model.ApplicationStage;
 import com.offerflow.model.JobApplication;
+import com.offerflow.service.BulkExportService;
 import com.offerflow.service.CompanyService;
 import com.offerflow.service.InterviewTemplateService;
 import com.offerflow.service.JobApplicationService;
@@ -12,6 +13,7 @@ import com.offerflow.service.UnknownInterviewTemplateException;
 import com.offerflow.web.FlashMessages;
 import com.offerflow.web.StageLabels;
 import jakarta.validation.Valid;
+import com.offerflow.support.ExportLimits;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -37,16 +39,19 @@ public class ApplicationController {
     private final CompanyService companyService;
     private final InterviewTemplateService interviewTemplateService;
     private final MarkdownExportService markdownExportService;
+    private final BulkExportService bulkExportService;
 
     public ApplicationController(
             JobApplicationService applicationService,
             CompanyService companyService,
             InterviewTemplateService interviewTemplateService,
-            MarkdownExportService markdownExportService) {
+            MarkdownExportService markdownExportService,
+            BulkExportService bulkExportService) {
         this.applicationService = applicationService;
         this.companyService = companyService;
         this.interviewTemplateService = interviewTemplateService;
         this.markdownExportService = markdownExportService;
+        this.bulkExportService = bulkExportService;
     }
 
     @GetMapping
@@ -63,6 +68,26 @@ public class ApplicationController {
         model.addAttribute("stageLabels", StageLabels.all());
         model.addAttribute("today", today);
         return "applications/list";
+    }
+
+    @GetMapping("/export-all")
+    public Object exportAll(RedirectAttributes redirectAttributes) {
+        if (bulkExportService.countApplications() == 0) {
+            redirectAttributes.addFlashAttribute(FlashMessages.ERROR, "暂无投递可导出。");
+            return "redirect:/applications";
+        }
+        if (bulkExportService.exceedsBulkLimit()) {
+            redirectAttributes.addFlashAttribute(
+                    FlashMessages.ERROR,
+                    "投递超过 " + ExportLimits.MAX_BULK_EXPORT + " 条，请分批导出。");
+            return "redirect:/applications";
+        }
+        byte[] zip = bulkExportService.exportAllAsZip();
+        String filename = "offerflow-export-" + LocalDate.now() + ".zip";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .contentType(MediaType.parseMediaType("application/zip"))
+                .body(zip);
     }
 
     @GetMapping("/new")

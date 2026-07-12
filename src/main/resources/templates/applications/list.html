@@ -12,6 +12,10 @@
     <div th:replace="~{fragments/messages :: flash}"></div>
     <h1>投递列表</h1>
 
+    <div class="actions" style="margin-bottom:12px;">
+        <a class="btn btn-sm" th:href="@{/applications/export-all}">导出全部 Markdown (zip)</a>
+    </div>
+
     <div class="card" style="margin-bottom:16px;">
         <form class="actions" method="get" th:action="@{/applications}">
             <input type="hidden" name="stage" th:if="${selectedStage != null}" th:value="${selectedStage}"/>
