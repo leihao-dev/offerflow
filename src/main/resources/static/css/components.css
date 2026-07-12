@@ -324,6 +324,11 @@ td.actions { white-space: nowrap; }
     margin-top: var(--space-3);
 }
 
+.debrief-card:target {
+    box-shadow: 0 0 0 2px var(--color-primary);
+    background: var(--color-primary-light);
+}
+
 @media (max-width: 640px) {
     .chip-row {
         overflow-x: auto;

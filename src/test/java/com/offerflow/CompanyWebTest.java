@@ -64,7 +64,8 @@ class CompanyWebTest {
     void navIncludesCompaniesLink() throws Exception {
         mockMvc.perform(get("/dashboard"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("目标公司")));
+                .andExpect(content().string(containsString("目标公司")))
+                .andExpect(content().string(containsString("复盘记录")));
     }
 
     @Test

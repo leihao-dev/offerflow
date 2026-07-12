@@ -109,7 +109,9 @@
 
         <div th:if="${#lists.isEmpty(jobApplication.interviewNotes)}" class="muted">还没有面试记录。</div>
 
-        <div th:each="note : ${jobApplication.interviewNotes}" class="card nested-card">
+        <div th:each="note : ${jobApplication.interviewNotes}"
+             th:id="'note-' + ${note.id}"
+             class="card nested-card debrief-card">
             <h3 th:text="${note.interviewDate + (note.roundLabel != null ? ' · ' + note.roundLabel : '')}">面试</h3>
             <p th:if="${note.questionsAsked != null}"><strong>问题：</strong><br/><span th:text="${note.questionsAsked}"></span></p>
             <p th:if="${note.selfAssessment != null}"><strong>自评：</strong><br/><span th:text="${note.selfAssessment}"></span></p>
