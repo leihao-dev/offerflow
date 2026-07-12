@@ -114,4 +114,11 @@ class CompanyWebTest {
                 .andExpect(content().string(containsString("美团")))
                 .andExpect(content().string(containsString("type=\"search\"")));
     }
+
+    @Test
+    void listShowsSeedPreview() throws Exception {
+        mockMvc.perform(get("/companies").param("previewSeed", CompanySeedService.FINANCE_TECH))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("蚂蚁集团")));
+    }
 }

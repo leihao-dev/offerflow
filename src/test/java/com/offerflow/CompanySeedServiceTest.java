@@ -74,6 +74,16 @@ class CompanySeedServiceTest {
     }
 
     @Test
+    void previewSeedReturnsFirstFiveSamples() {
+        var preview = seedService.previewSeed(CompanySeedService.FINANCE_TECH);
+
+        assertEquals(CompanySeedService.FINANCE_TECH, preview.packId());
+        assertEquals(10, preview.totalCount());
+        assertEquals(5, preview.samples().size());
+        assertTrue(preview.samples().stream().anyMatch(entry -> entry.name().contains("蚂蚁")));
+    }
+
+    @Test
     void importedCompaniesHaveCareersUrl() {
         seedService.importSeed(CompanySeedService.JAVA_BACKEND_INTERNET);
 

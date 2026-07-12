@@ -38,12 +38,21 @@ public class CompanyController {
     public String list(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String industry,
+            @RequestParam(required = false) String previewSeed,
             Model model) {
         model.addAttribute("companies", companyService.search(Optional.ofNullable(q), Optional.ofNullable(industry)));
         model.addAttribute("industries", companyService.findDistinctIndustries());
         model.addAttribute("selectedIndustry", industry);
         model.addAttribute("searchQuery", q);
         model.addAttribute("seedPacks", companySeedService.listAvailableSeeds());
+        if (previewSeed != null && !previewSeed.isBlank()) {
+            try {
+                model.addAttribute("seedPreview", companySeedService.previewSeed(previewSeed));
+                model.addAttribute("previewSeedId", previewSeed);
+            } catch (UnknownCompanySeedException ex) {
+                model.addAttribute("previewSeedError", "seed 包不存在：" + previewSeed);
+            }
+        }
         return "companies/list";
     }
 

@@ -27,7 +27,30 @@
             </select>
             <button class="btn btn-primary btn-sm" type="submit">导入 seed</button>
         </form>
+        <form class="actions" method="get" th:action="@{/companies}" style="margin-top:8px;">
+            <input type="hidden" name="q" th:if="${searchQuery != null and !searchQuery.isBlank()}" th:value="${searchQuery}"/>
+            <input type="hidden" name="industry" th:if="${selectedIndustry != null and !selectedIndustry.isBlank()}"
+                   th:value="${selectedIndustry}"/>
+            <select name="previewSeed" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;">
+                <option th:each="pack : ${seedPacks}"
+                        th:value="${pack.id()}"
+                        th:selected="${pack.id() == previewSeedId}"
+                        th:text="${pack.title() + ' (' + pack.entryCount() + ')'}">seed</option>
+            </select>
+            <button class="btn btn-sm" type="submit">预览 seed</button>
+        </form>
     </div>
+
+    <div class="card preview-panel" th:if="${seedPreview != null}" style="margin-bottom:16px;border-left:4px solid var(--primary, #2563eb);">
+        <h2 style="margin:0 0 8px;font-size:1rem;"
+            th:text="${seedPreview.title() + '（共 ' + seedPreview.totalCount() + ' 家，预览前 ' + seedPreview.samples().size() + ' 家）'}">预览</h2>
+        <ul>
+            <li th:each="entry : ${seedPreview.samples()}"
+                th:text="${entry.name() + (entry.industry() != null ? ' · ' + entry.industry() : '')}">公司</li>
+        </ul>
+        <a class="btn btn-sm" th:href="@{/companies(q=${searchQuery}, industry=${selectedIndustry})}">关闭预览</a>
+    </div>
+    <p th:if="${previewSeedError != null}" class="muted" th:text="${previewSeedError}"></p>
 
     <div class="card" style="margin-bottom:16px;">
         <form class="actions" method="get" th:action="@{/companies}">

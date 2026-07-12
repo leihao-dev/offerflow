@@ -6,6 +6,8 @@ import com.offerflow.dto.CompanyForm;
 import com.offerflow.dto.CompanySeedEntry;
 import com.offerflow.dto.SeedImportResult;
 import com.offerflow.dto.SeedPackInfo;
+import com.offerflow.dto.SeedPreviewEntry;
+import com.offerflow.dto.SeedPreviewView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -34,6 +36,8 @@ public class CompanySeedService {
 
     private static final List<String> SEED_ORDER =
             List.of(JAVA_BACKEND_INTERNET, FINANCE_TECH, FOREIGN_TECH);
+
+    private static final int PREVIEW_SAMPLE_SIZE = 5;
 
     private final CompanyService companyService;
     private final ObjectMapper objectMapper;
@@ -70,6 +74,17 @@ public class CompanySeedService {
         }
 
         return new SeedImportResult(imported, skipped, entries.size());
+    }
+
+    @Transactional(readOnly = true)
+    public SeedPreviewView previewSeed(String seedId) {
+        List<CompanySeedEntry> entries = loadEntries(resolveSeedPath(seedId));
+        String title = SEED_TITLES.getOrDefault(seedId, seedId);
+        List<SeedPreviewEntry> samples = entries.stream()
+                .limit(PREVIEW_SAMPLE_SIZE)
+                .map(entry -> new SeedPreviewEntry(entry.name(), entry.industry()))
+                .toList();
+        return new SeedPreviewView(seedId, title, entries.size(), samples);
     }
 
     private String resolveSeedPath(String seedId) {
