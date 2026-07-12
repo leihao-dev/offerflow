@@ -1,0 +1,33 @@
+:root {
+    --color-primary: #3370ff;
+    --color-primary-hover: #2860e1;
+    --color-primary-light: #e8f3ff;
+    --color-bg: #f5f6f7;
+    --color-surface: #ffffff;
+    --color-text: #1f2329;
+    --color-text-secondary: #646a73;
+    --color-border: #dee0e3;
+    --color-danger: #f54a45;
+    --color-success: #34c724;
+    --color-warning-bg: #fff5eb;
+    --color-row-hover: #f0f1f2;
+    --color-table-header: #f5f6f7;
+    --font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+    --font-size-title: 20px;
+    --font-size-section: 16px;
+    --font-size-body: 14px;
+    --font-size-caption: 12px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --radius-card: 8px;
+    --radius-btn: 6px;
+    --radius-input: 6px;
+    --radius-badge: 4px;
+    --sidebar-width: 240px;
+    --content-max-width: 1200px;
+    --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
