@@ -6,10 +6,8 @@
     <title>未找到 · OfferFlow</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
-<body>
-<header th:replace="~{fragments/nav :: nav('')}"></header>
-<main class="container">
-    <div class="card">
+<body class="error-page">
+    <div class="empty-state">
         <h1>页面未找到</h1>
         <p th:text="${message} ?: '请求的资源不存在。'">未找到</p>
         <div class="actions">
@@ -17,6 +15,5 @@
             <a class="btn" th:href="@{/applications}">投递列表</a>
         </div>
     </div>
-</main>
 </body>
 </html>

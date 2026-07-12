@@ -56,6 +56,7 @@ public class InterviewController {
         model.addAttribute("form", form);
         model.addAttribute("jobApplication", application);
         model.addAttribute("pageTitle", "新增面试复盘");
+        model.addAttribute("pageSubtitle", application.getCompanyName() + " · " + application.getPositionTitle());
         return "interviews/form";
     }
 
@@ -68,8 +69,10 @@ public class InterviewController {
             RedirectAttributes redirectAttributes) {
         form.setApplicationId(applicationId);
         if (result.hasErrors()) {
-            model.addAttribute("jobApplication", applicationService.requireApplication(applicationId));
+            JobApplication application = applicationService.requireApplication(applicationId);
+            model.addAttribute("jobApplication", application);
             model.addAttribute("pageTitle", "新增面试复盘");
+            model.addAttribute("pageSubtitle", application.getCompanyName() + " · " + application.getPositionTitle());
             return "interviews/form";
         }
         interviewNoteService.create(form);
@@ -84,6 +87,9 @@ public class InterviewController {
         model.addAttribute("form", form);
         model.addAttribute("jobApplication", note.getApplication());
         model.addAttribute("pageTitle", "编辑面试复盘");
+        model.addAttribute(
+                "pageSubtitle",
+                note.getApplication().getCompanyName() + " · " + note.getApplication().getPositionTitle());
         return "interviews/form";
     }
 
@@ -99,6 +105,9 @@ public class InterviewController {
         if (result.hasErrors()) {
             model.addAttribute("jobApplication", note.getApplication());
             model.addAttribute("pageTitle", "编辑面试复盘");
+            model.addAttribute(
+                    "pageSubtitle",
+                    note.getApplication().getCompanyName() + " · " + note.getApplication().getPositionTitle());
             return "interviews/form";
         }
         interviewNoteService.update(id, form);

@@ -1,37 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>目标公司 · OfferFlow</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}"/>
-</head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: shell('companies', '目标公司', '维护官网、招聘页与内推信息，投递时可重复引用同一份档案。', ~{::#headerActions}, ~{::#pageBody})}">
 <body>
-<header th:replace="~{fragments/nav :: nav('companies')}"></header>
-<main class="container">
-    <div th:replace="~{fragments/messages :: flash}"></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-        <h1>目标公司</h1>
-        <a class="btn btn-primary" th:href="@{/companies/new}">+ 新增公司</a>
-    </div>
-    <p class="muted">维护官网、招聘页与内推信息，投递时可重复引用同一份档案。</p>
-
-    <div class="card" style="margin-bottom:16px;">
-        <h2 style="margin:0 0 6px;font-size:1rem;">导入公司 seed</h2>
-        <p class="muted" style="margin:0 0 12px;">已存在的公司将跳过，不覆盖已有档案。</p>
+<th:block id="headerActions">
+    <a class="btn btn-primary" th:href="@{/companies/new}">+ 新增公司</a>
+</th:block>
+<th:block id="pageBody">
+    <div class="card">
+        <h2>导入公司 seed</h2>
+        <p class="muted">已存在的公司将跳过，不覆盖已有档案。</p>
         <form class="actions" method="post" th:action="@{/companies/import-seed}">
-            <select name="seed" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;">
+            <select name="seed" class="select-inline">
                 <option th:each="pack : ${seedPacks}"
                         th:value="${pack.id()}"
                         th:text="${pack.title() + ' (' + pack.entryCount() + ')'}">seed</option>
             </select>
             <button class="btn btn-primary btn-sm" type="submit">导入 seed</button>
         </form>
-        <form class="actions" method="get" th:action="@{/companies}" style="margin-top:8px;">
+        <form class="actions" method="get" th:action="@{/companies}">
             <input type="hidden" name="q" th:if="${searchQuery != null and !searchQuery.isBlank()}" th:value="${searchQuery}"/>
             <input type="hidden" name="industry" th:if="${selectedIndustry != null and !selectedIndustry.isBlank()}"
                    th:value="${selectedIndustry}"/>
-            <select name="previewSeed" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;">
+            <select name="previewSeed" class="select-inline">
                 <option th:each="pack : ${seedPacks}"
                         th:value="${pack.id()}"
                         th:selected="${pack.id() == previewSeedId}"
@@ -41,9 +31,8 @@
         </form>
     </div>
 
-    <div class="card preview-panel" th:if="${seedPreview != null}" style="margin-bottom:16px;border-left:4px solid var(--primary, #2563eb);">
-        <h2 style="margin:0 0 8px;font-size:1rem;"
-            th:text="${seedPreview.title() + '（共 ' + seedPreview.totalCount() + ' 家，预览前 ' + seedPreview.samples().size() + ' 家）'}">预览</h2>
+    <div class="card preview-panel" th:if="${seedPreview != null}">
+        <h2 th:text="${seedPreview.title() + '（共 ' + seedPreview.totalCount() + ' 家，预览前 ' + seedPreview.samples().size() + ' 家）'}">预览</h2>
         <ul>
             <li th:each="entry : ${seedPreview.samples()}"
                 th:text="${entry.name() + (entry.industry() != null ? ' · ' + entry.industry() : '')}">公司</li>
@@ -52,28 +41,28 @@
     </div>
     <p th:if="${previewSeedError != null}" class="muted" th:text="${previewSeedError}"></p>
 
-    <div class="card" style="margin-bottom:16px;">
-        <form class="actions" method="get" th:action="@{/companies}">
+    <div class="card">
+        <form class="toolbar" method="get" th:action="@{/companies}">
             <input type="hidden" name="industry" th:if="${selectedIndustry != null and !selectedIndustry.isBlank()}"
                    th:value="${selectedIndustry}"/>
-            <input name="q" type="search" placeholder="按公司名搜索…" th:value="${searchQuery}"
-                   style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;"/>
+            <input class="search-input" name="q" type="search" placeholder="按公司名搜索…" th:value="${searchQuery}"/>
             <button class="btn btn-primary btn-sm" type="submit">搜索</button>
-            <a class="btn btn-sm" th:if="${searchQuery != null and !searchQuery.isBlank()}" th:href="@{/companies(industry=${selectedIndustry})}">清除搜索</a>
+            <a class="btn btn-text btn-sm" th:if="${searchQuery != null and !searchQuery.isBlank()}"
+               th:href="@{/companies(industry=${selectedIndustry})}">清除搜索</a>
         </form>
     </div>
 
-    <div class="actions" th:if="${!industries.isEmpty()}">
-        <a class="btn btn-sm" th:classappend="${selectedIndustry == null} ? 'btn-primary' : ''"
+    <div class="chip-row" th:if="${!industries.isEmpty()}">
+        <a class="btn btn-sm chip" th:classappend="${selectedIndustry == null} ? ' is-active' : ''"
            th:href="@{/companies(q=${searchQuery})}">全部行业</a>
-        <a class="btn btn-sm" th:each="ind : ${industries}"
-           th:classappend="${selectedIndustry == ind} ? 'btn-primary' : ''"
+        <a class="btn btn-sm chip" th:each="ind : ${industries}"
+           th:classappend="${selectedIndustry == ind} ? ' is-active' : ''"
            th:href="@{/companies(industry=${ind}, q=${searchQuery})}"
            th:text="${ind}">行业</a>
     </div>
 
     <div class="card">
-        <table th:if="${!companies.isEmpty()}">
+        <table class="data-table" th:if="${!companies.isEmpty()}">
             <thead>
             <tr><th>公司</th><th>行业</th><th>内推码</th><th>招聘页</th><th></th></tr>
             </thead>
@@ -87,20 +76,21 @@
                     <span th:if="${c.careersUrl == null}" class="muted">-</span>
                 </td>
                 <td class="actions">
-                    <a class="btn btn-sm" th:href="@{/companies/{id}(id=${c.id})}">详情</a>
-                    <a class="btn btn-sm" th:href="@{/companies/{id}/edit(id=${c.id})}">编辑</a>
+                    <a class="btn btn-text btn-sm" th:href="@{/companies/{id}(id=${c.id})}">详情</a>
+                    <a class="btn btn-text btn-sm" th:href="@{/companies/{id}/edit(id=${c.id})}">编辑</a>
                 </td>
             </tr>
             </tbody>
         </table>
-        <p th:if="${companies.isEmpty() and searchQuery != null and !searchQuery.isBlank()}" class="muted">
-            没有匹配「<span th:text="${searchQuery}"></span>」的公司。
-            <a th:href="@{/companies(industry=${selectedIndustry})}">清除搜索</a>
-        </p>
-        <p th:if="${companies.isEmpty() and (searchQuery == null or searchQuery.isBlank())}" class="muted">
-            还没有公司档案，<a th:href="@{/companies/new}">添加第一家目标公司</a>。
-        </p>
+        <div th:if="${companies.isEmpty() and searchQuery != null and !searchQuery.isBlank()}" class="empty-state">
+            <p>没有匹配「<span th:text="${searchQuery}"></span>」的公司。</p>
+            <a class="btn btn-text" th:href="@{/companies(industry=${selectedIndustry})}">清除搜索</a>
+        </div>
+        <div th:if="${companies.isEmpty() and (searchQuery == null or searchQuery.isBlank())}" class="empty-state">
+            <p>还没有公司档案</p>
+            <a class="btn btn-primary" th:href="@{/companies/new}">添加第一家目标公司</a>
+        </div>
     </div>
-</main>
+</th:block>
 </body>
 </html>

@@ -1,17 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title th:text="${pageTitle + ' · OfferFlow'}">面试复盘</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}"/>
-</head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: shell('applications', ${pageTitle}, ${pageSubtitle}, null, ~{::#pageBody})}">
 <body>
-<header th:replace="~{fragments/nav :: nav('applications')}"></header>
-<main class="container">
-    <div th:replace="~{fragments/messages :: flash}"></div>
-    <h1 th:text="${pageTitle}">面试复盘</h1>
-    <p class="muted" th:text="${jobApplication.companyName + ' · ' + jobApplication.positionTitle}">岗位</p>
+<th:block id="pageBody">
     <p th:if="${templateLoaded}" class="flash flash-success" role="status">
         已加载 Java 后端复盘框架，请按实际面试填写。
     </p>
@@ -44,6 +35,6 @@
             </div>
         </form>
     </div>
-</main>
+</th:block>
 </body>
 </html>

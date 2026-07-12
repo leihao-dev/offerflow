@@ -1,16 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title th:text="${pageTitle + ' · OfferFlow'}">公司表单</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}"/>
-</head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: shell(${activePage}, ${pageTitle}, '', null, ~{::#pageBody})}">
 <body>
-<header th:replace="~{fragments/nav :: nav(${form.id == null} ? 'companies-new' : 'companies')}"></header>
-<main class="container">
-    <div th:replace="~{fragments/messages :: flash}"></div>
-    <h1 th:text="${pageTitle}">表单</h1>
+<th:block id="pageBody">
     <div class="card">
         <form th:action="${form.id != null} ? @{/companies/{id}(id=${form.id})} : @{/companies}"
               method="post" th:object="${form}">
@@ -63,6 +55,6 @@
             </div>
         </form>
     </div>
-</main>
+</th:block>
 </body>
 </html>

@@ -1,18 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title th:text="${company.name + ' · OfferFlow'}">公司详情</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}"/>
-</head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: shell('companies', ${pageTitle}, ${pageSubtitle}, null, ~{::#pageBody})}">
 <body>
-<header th:replace="~{fragments/nav :: nav('companies')}"></header>
-<main class="container">
-    <div th:replace="~{fragments/messages :: flash}"></div>
-    <h1 th:text="${company.name}">公司</h1>
-    <p class="muted" th:if="${company.industry != null}" th:text="${company.industry}">行业</p>
-
+<th:block id="pageBody">
     <div class="card">
         <h2>快捷链接</h2>
         <div class="actions">
@@ -39,21 +29,26 @@
 
     <div class="card" th:if="${company.companyNotes != null and !company.companyNotes.isBlank()}">
         <h2>公司调研</h2>
-        <pre th:text="${company.companyNotes}" style="white-space:pre-wrap;font-family:inherit;"></pre>
+        <pre class="pre-wrap" th:text="${company.companyNotes}"></pre>
     </div>
 
     <div class="card">
         <h2>关联投递</h2>
-        <table th:if="${!applications.isEmpty()}">
+        <table class="data-table" th:if="${!applications.isEmpty()}">
             <thead>
             <tr><th>岗位</th><th>阶段</th><th>投递日</th><th></th></tr>
             </thead>
             <tbody>
             <tr th:each="app : ${applications}">
                 <td th:text="${app.positionTitle}">岗位</td>
-                <td><span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span></td>
+                <td>
+                    <span class="badge">
+                        <span class="stage-dot" th:classappend="${T(com.offerflow.web.StageStyles).dotClass(app.stage)}"></span>
+                        <span th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span>
+                    </span>
+                </td>
                 <td th:text="${app.appliedAt}">日期</td>
-                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">查看投递</a></td>
+                <td><a class="btn btn-text btn-sm" th:href="@{/applications/{id}(id=${app.id})}">查看投递</a></td>
             </tr>
             </tbody>
         </table>
@@ -62,12 +57,12 @@
 
     <div class="actions">
         <a class="btn" th:href="@{/companies/{id}/edit(id=${company.id})}">编辑</a>
-        <form th:action="@{/companies/{id}/delete(id=${company.id})}" method="post" style="display:inline"
+        <form th:action="@{/companies/{id}/delete(id=${company.id})}" method="post" class="form-inline"
               onsubmit="return confirm('确定删除该公司档案？');">
             <button class="btn btn-danger" type="submit">删除</button>
         </form>
         <a class="btn" th:href="@{/companies}">返回列表</a>
     </div>
-</main>
+</th:block>
 </body>
 </html>

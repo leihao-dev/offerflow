@@ -101,7 +101,7 @@ public class ApplicationController {
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("form", new ApplicationForm());
-        populateFormModel(model, "新增投递");
+        populateFormModel(model, "新增投递", "applications-new");
         return "applications/form";
     }
 
@@ -112,7 +112,7 @@ public class ApplicationController {
             Model model,
             RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            populateFormModel(model, "新增投递");
+            populateFormModel(model, "新增投递", "applications-new");
             return "applications/form";
         }
         JobApplication saved = applicationService.create(form);
@@ -124,6 +124,8 @@ public class ApplicationController {
     public String detail(@PathVariable Long id, Model model) {
         JobApplication application = applicationService.requireApplication(id);
         model.addAttribute("jobApplication", application);
+        model.addAttribute("pageTitle", application.getCompanyName() + " - " + application.getPositionTitle());
+        model.addAttribute("pageSubtitle", buildDetailSubtitle(application));
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
         model.addAttribute("templatePacks", interviewTemplateService.listAvailableTemplates());
@@ -139,6 +141,7 @@ public class ApplicationController {
         try {
             JobApplication application = applicationService.requireApplication(id);
             model.addAttribute("jobApplication", application);
+            model.addAttribute("pageSubtitle", application.getCompanyName() + " · " + application.getPositionTitle());
             model.addAttribute("templatePreview", interviewTemplateService.previewTemplate(template));
             model.addAttribute("selectedTemplateId", template);
             model.addAttribute("templatePacks", interviewTemplateService.listAvailableTemplates());
@@ -184,7 +187,7 @@ public class ApplicationController {
     public String editForm(@PathVariable Long id, Model model) {
         JobApplication application = applicationService.requireApplication(id);
         model.addAttribute("form", toForm(application));
-        populateFormModel(model, "编辑投递");
+        populateFormModel(model, "编辑投递", "applications");
         return "applications/form";
     }
 
@@ -196,7 +199,7 @@ public class ApplicationController {
             Model model,
             RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            populateFormModel(model, "编辑投递");
+            populateFormModel(model, "编辑投递", "applications");
             return "applications/form";
         }
         applicationService.update(id, form);
@@ -222,11 +225,20 @@ public class ApplicationController {
         return "redirect:/applications";
     }
 
-    private void populateFormModel(Model model, String pageTitle) {
+    private void populateFormModel(Model model, String pageTitle, String activePage) {
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
         model.addAttribute("companies", companyService.findAll(Optional.empty()));
         model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("activePage", activePage);
+    }
+
+    private String buildDetailSubtitle(JobApplication application) {
+        String subtitle = StageLabels.label(application.getStage());
+        if (application.getSource() != null && !application.getSource().isBlank()) {
+            return subtitle + " · " + application.getSource();
+        }
+        return subtitle;
     }
 
     private void addSuccessFlashWithDossierHint(

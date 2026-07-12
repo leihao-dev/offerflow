@@ -1,16 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title th:text="${pageTitle + ' · OfferFlow'}">表单</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}"/>
-</head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: shell(${activePage}, ${pageTitle}, '', null, ~{::#pageBody})}">
 <body>
-<header th:replace="~{fragments/nav :: nav(${form.id == null} ? 'applications-new' : 'applications')}"></header>
-<main class="container">
-    <div th:replace="~{fragments/messages :: flash}"></div>
-    <h1 th:text="${pageTitle}">表单</h1>
+<th:block id="pageBody">
     <div class="card">
         <form th:action="${form.id != null} ? @{/applications/{id}(id=${form.id})} : @{/applications}"
               method="post" th:object="${form}">
@@ -23,7 +15,7 @@
                 <option th:each="c : ${companies}" th:value="${c.id}" th:text="${c.name}">公司</option>
             </select>
             <div class="error" th:if="${#fields.hasErrors('companyProvided')}" th:errors="*{companyProvided}"></div>
-            <p class="muted" style="margin-top:8px;">
+            <p class="muted">
                 没有目标公司？<a th:href="@{/companies/new}" target="_blank" rel="noopener">新建公司档案</a>
             </p>
 
@@ -75,21 +67,21 @@
             </div>
         </form>
     </div>
-</main>
-<script>
-    (function () {
-        var companySelect = document.getElementById('companyId');
-        var manualRow = document.getElementById('manualCompanyRow');
-        if (!companySelect || !manualRow) {
-            return;
-        }
-        function syncManualCompanyRow() {
-            var useManual = !companySelect.value;
-            manualRow.style.display = useManual ? 'block' : 'none';
-        }
-        companySelect.addEventListener('change', syncManualCompanyRow);
-        syncManualCompanyRow();
-    })();
-</script>
+    <script>
+        (function () {
+            var companySelect = document.getElementById('companyId');
+            var manualRow = document.getElementById('manualCompanyRow');
+            if (!companySelect || !manualRow) {
+                return;
+            }
+            function syncManualCompanyRow() {
+                var useManual = !companySelect.value;
+                manualRow.style.display = useManual ? 'block' : 'none';
+            }
+            companySelect.addEventListener('change', syncManualCompanyRow);
+            syncManualCompanyRow();
+        })();
+    </script>
+</th:block>
 </body>
 </html>

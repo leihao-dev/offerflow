@@ -16,22 +16,5 @@
     <a class="btn btn-primary sidebar-cta" th:href="@{/applications/new}"
        th:classappend="${activePage == 'applications-new'} ? ' is-active' : ''">+ 新增投递</a>
 </aside>
-
-<!-- Legacy top nav for pages not yet migrated to layout shell (removed in Task 39) -->
-<header th:fragment="nav(activePage)" class="legacy-top-nav">
-    <nav class="legacy-nav" aria-label="主导航">
-        <a class="sidebar-brand" th:href="@{/}">OfferFlow</a>
-        <a class="sidebar-link" th:href="@{/dashboard}"
-           th:classappend="${activePage == 'dashboard'} ? ' is-active' : ''">仪表盘</a>
-        <a class="sidebar-link" th:href="@{/applications}"
-           th:classappend="${activePage == 'applications'} ? ' is-active' : ''">投递列表</a>
-        <a class="sidebar-link" th:href="@{/interviews/search}"
-           th:classappend="${activePage == 'interviews-search'} ? ' is-active' : ''">复盘搜索</a>
-        <a class="sidebar-link" th:href="@{/companies}"
-           th:classappend="${activePage == 'companies' or activePage == 'companies-new'} ? ' is-active' : ''">目标公司</a>
-        <a class="btn btn-primary btn-sm" th:href="@{/applications/new}"
-           th:classappend="${activePage == 'applications-new'} ? ' is-active' : ''">+ 新增投递</a>
-    </nav>
-</header>
 </body>
 </html>

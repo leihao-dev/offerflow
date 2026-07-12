@@ -215,6 +215,11 @@
     color: var(--color-text-secondary);
 }
 
+.empty-state .actions {
+    justify-content: center;
+    margin-top: var(--space-4);
+}
+
 .search-input {
     flex: 1;
     min-width: 180px;

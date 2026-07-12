@@ -1,20 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title th:text="'模板预览 · ' + ${templatePreview.title()} + ' · OfferFlow'">模板预览</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}"/>
-</head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: shell('applications', '模板预览', ${pageSubtitle}, ~{::#headerActions}, ~{::#pageBody})}">
 <body>
-<header th:replace="~{fragments/nav :: nav('applications')}"></header>
-<main class="container">
-    <div th:replace="~{fragments/messages :: flash}"></div>
-    <h1 th:text="'预览：' + ${templatePreview.title()}">模板预览</h1>
-    <p class="muted" th:text="${jobApplication.companyName + ' · ' + jobApplication.positionTitle}">投递</p>
-
-    <div class="actions" style="margin-bottom:16px;">
-        <a class="btn btn-sm" th:href="@{/applications/{id}(id=${jobApplication.id})}">← 返回投递详情</a>
+<th:block id="headerActions">
+    <a class="btn btn-text btn-sm" th:href="@{/applications/{id}(id=${jobApplication.id})}">← 返回投递详情</a>
+</th:block>
+<th:block id="pageBody">
+    <h2 th:text="${templatePreview.title()}">模板</h2>
+    <div class="actions">
         <a class="btn btn-sm" th:each="pack : ${templatePacks}"
            th:classappend="${pack.id() == selectedTemplateId} ? ' btn-primary' : ''"
            th:href="@{/applications/{id}/preview-template(id=${jobApplication.id}, template=${pack.id()})}"
@@ -23,7 +16,7 @@
 
     <div class="card">
         <h2>准备清单（前 8 行）</h2>
-        <pre th:text="${templatePreview.prepExcerpt()}" style="white-space:pre-wrap;font-family:inherit;">prep</pre>
+        <pre class="pre-wrap" th:text="${templatePreview.prepExcerpt()}">prep</pre>
     </div>
 
     <div class="card">
@@ -31,11 +24,11 @@
         <p th:if="${templatePreview.debriefRoundLabel() != null}">
             <strong>默认轮次：</strong><span th:text="${templatePreview.debriefRoundLabel()}"></span>
         </p>
-        <pre th:text="${templatePreview.debriefSummary()}" style="white-space:pre-wrap;font-family:inherit;">debrief</pre>
+        <pre class="pre-wrap" th:text="${templatePreview.debriefSummary()}">debrief</pre>
     </div>
 
     <div class="actions">
-        <form method="post" th:action="@{/applications/{id}/apply-template(id=${jobApplication.id})}" style="display:inline;">
+        <form method="post" th:action="@{/applications/{id}/apply-template(id=${jobApplication.id})}" class="form-inline">
             <input type="hidden" name="template" th:value="${selectedTemplateId}"/>
             <button class="btn btn-primary btn-sm" type="submit">填充准备清单</button>
         </form>
@@ -44,6 +37,6 @@
             带此模板新增复盘
         </a>
     </div>
-</main>
+</th:block>
 </body>
 </html>

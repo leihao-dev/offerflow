@@ -73,6 +73,7 @@ public class CompanyController {
     public String createForm(Model model) {
         model.addAttribute("form", new CompanyForm());
         model.addAttribute("pageTitle", "新增公司档案");
+        model.addAttribute("activePage", "companies-new");
         return "companies/form";
     }
 
@@ -84,6 +85,7 @@ public class CompanyController {
             RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("pageTitle", "新增公司档案");
+            model.addAttribute("activePage", "companies-new");
             return "companies/form";
         }
         try {
@@ -93,6 +95,7 @@ public class CompanyController {
         } catch (DuplicateCompanyNameException ex) {
             result.rejectValue("name", "duplicate", "该公司档案已存在，请直接编辑或更换名称。");
             model.addAttribute("pageTitle", "新增公司档案");
+            model.addAttribute("activePage", "companies-new");
             return "companies/form";
         }
     }
@@ -101,6 +104,8 @@ public class CompanyController {
     public String detail(@PathVariable Long id, Model model) {
         Company company = companyService.requireCompany(id);
         model.addAttribute("company", company);
+        model.addAttribute("pageTitle", company.getName());
+        model.addAttribute("pageSubtitle", company.getIndustry() != null ? company.getIndustry() : "");
         model.addAttribute("applications", companyService.findApplications(id));
         return "companies/detail";
     }
@@ -110,6 +115,7 @@ public class CompanyController {
         Company company = companyService.requireCompany(id);
         model.addAttribute("form", toForm(company));
         model.addAttribute("pageTitle", "编辑公司档案");
+        model.addAttribute("activePage", "companies");
         return "companies/form";
     }
 
@@ -122,6 +128,7 @@ public class CompanyController {
             RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("pageTitle", "编辑公司档案");
+            model.addAttribute("activePage", "companies");
             return "companies/form";
         }
         try {
@@ -131,6 +138,7 @@ public class CompanyController {
         } catch (DuplicateCompanyNameException ex) {
             result.rejectValue("name", "duplicate", "该公司档案已存在，请直接编辑或更换名称。");
             model.addAttribute("pageTitle", "编辑公司档案");
+            model.addAttribute("activePage", "companies");
             return "companies/form";
         }
     }
