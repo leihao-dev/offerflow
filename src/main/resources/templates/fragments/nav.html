@@ -1,48 +1,37 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <body>
-<header th:fragment="nav(activePage)">
-    <nav class="site-nav">
-        <a class="brand" th:href="@{/}">OfferFlow</a>
-        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="打开菜单">
-            <span class="nav-toggle-bar"></span>
-            <span class="nav-toggle-bar"></span>
-            <span class="nav-toggle-bar"></span>
-        </button>
-        <div class="nav-links" id="nav-links">
-            <a th:href="@{/dashboard}"
-               th:classappend="${activePage == 'dashboard'} ? ' nav-active' : ''">仪表盘</a>
-            <a th:href="@{/applications}"
-               th:classappend="${activePage == 'applications'} ? ' nav-active' : ''">投递列表</a>
-            <a th:href="@{/interviews/search}"
-               th:classappend="${activePage == 'interviews-search'} ? ' nav-active' : ''">复盘搜索</a>
-            <a th:href="@{/companies}"
-               th:classappend="${activePage == 'companies' or activePage == 'companies-new'} ? ' nav-active' : ''">目标公司</a>
-            <a class="btn btn-primary" th:href="@{/applications/new}"
-               th:classappend="${activePage == 'applications-new'} ? ' nav-active' : ''">+ 新增投递</a>
-        </div>
+<aside class="sidebar" th:fragment="sidebar(activePage)">
+    <a class="sidebar-brand" th:href="@{/}">OfferFlow</a>
+    <nav class="sidebar-nav" aria-label="主导航">
+        <a class="sidebar-link" th:href="@{/dashboard}"
+           th:classappend="${activePage == 'dashboard'} ? ' is-active' : ''">仪表盘</a>
+        <a class="sidebar-link" th:href="@{/applications}"
+           th:classappend="${activePage == 'applications'} ? ' is-active' : ''">投递列表</a>
+        <a class="sidebar-link" th:href="@{/interviews/search}"
+           th:classappend="${activePage == 'interviews-search'} ? ' is-active' : ''">复盘搜索</a>
+        <a class="sidebar-link" th:href="@{/companies}"
+           th:classappend="${activePage == 'companies' or activePage == 'companies-new'} ? ' is-active' : ''">目标公司</a>
     </nav>
-    <script>
-        (function () {
-            var toggle = document.querySelector('.nav-toggle');
-            var links = document.getElementById('nav-links');
-            if (!toggle || !links) {
-                return;
-            }
-            toggle.addEventListener('click', function () {
-                var open = links.classList.toggle('is-open');
-                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-                toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
-            });
-            links.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', function () {
-                    links.classList.remove('is-open');
-                    toggle.setAttribute('aria-expanded', 'false');
-                    toggle.setAttribute('aria-label', '打开菜单');
-                });
-            });
-        })();
-    </script>
+    <a class="btn btn-primary sidebar-cta" th:href="@{/applications/new}"
+       th:classappend="${activePage == 'applications-new'} ? ' is-active' : ''">+ 新增投递</a>
+</aside>
+
+<!-- Legacy top nav for pages not yet migrated to layout shell (removed in Task 39) -->
+<header th:fragment="nav(activePage)" class="legacy-top-nav">
+    <nav class="legacy-nav" aria-label="主导航">
+        <a class="sidebar-brand" th:href="@{/}">OfferFlow</a>
+        <a class="sidebar-link" th:href="@{/dashboard}"
+           th:classappend="${activePage == 'dashboard'} ? ' is-active' : ''">仪表盘</a>
+        <a class="sidebar-link" th:href="@{/applications}"
+           th:classappend="${activePage == 'applications'} ? ' is-active' : ''">投递列表</a>
+        <a class="sidebar-link" th:href="@{/interviews/search}"
+           th:classappend="${activePage == 'interviews-search'} ? ' is-active' : ''">复盘搜索</a>
+        <a class="sidebar-link" th:href="@{/companies}"
+           th:classappend="${activePage == 'companies' or activePage == 'companies-new'} ? ' is-active' : ''">目标公司</a>
+        <a class="btn btn-primary btn-sm" th:href="@{/applications/new}"
+           th:classappend="${activePage == 'applications-new'} ? ' is-active' : ''">+ 新增投递</a>
+    </nav>
 </header>
 </body>
 </html>
