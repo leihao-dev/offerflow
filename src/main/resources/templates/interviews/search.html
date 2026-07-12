@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>复盘搜索 · OfferFlow</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<header th:replace="~{fragments/nav :: nav('interviews-search')}"></header>
+<main class="container">
+    <h1>复盘搜索</h1>
+    <p class="muted" th:if="${!hasQuery}">输入关键词搜索全部面试复盘（问题、自评、改进、公司名、岗位）。</p>
+
+    <div class="card" style="margin-bottom:16px;">
+        <form class="actions" method="get" th:action="@{/interviews/search}">
+            <input name="q" type="search" placeholder="例如：线程池、HashMap、项目深挖…"
+                   th:value="${searchQuery}"
+                   style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;"/>
+            <button class="btn btn-primary btn-sm" type="submit">搜索</button>
+            <a class="btn btn-sm" th:if="${hasQuery}" th:href="@{/interviews/search}">清除</a>
+        </form>
+    </div>
+
+    <div th:if="${hasQuery and #lists.isEmpty(hits)}" class="card muted">
+        没有匹配「<span th:text="${searchQuery}"></span>」的复盘。
+    </div>
+
+    <div th:if="${hasQuery and !#lists.isEmpty(hits)}" class="card">
+        <table>
+            <thead>
+            <tr><th>日期</th><th>公司 · 岗位</th><th>轮次</th><th>摘要</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="hit : ${hits}">
+                <td th:text="${hit.interviewDate()}">日期</td>
+                <td>
+                    <strong th:text="${hit.companyName()}">公司</strong>
+                    <span class="muted" th:text="' · ' + ${hit.positionTitle()}">岗位</span>
+                </td>
+                <td th:text="${hit.roundLabel() != null ? hit.roundLabel() : '-'}">轮次</td>
+                <td class="muted" th:text="${hit.snippet()}">摘要</td>
+                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${hit.applicationId()})}">查看投递</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

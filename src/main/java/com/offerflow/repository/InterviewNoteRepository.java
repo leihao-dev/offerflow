@@ -16,4 +16,9 @@ public interface InterviewNoteRepository extends JpaRepository<InterviewNote, Lo
     List<InterviewNote> findByInterviewDateBetween(LocalDate start, LocalDate end);
 
     List<InterviewNote> findByApplicationIdOrderByInterviewDateDesc(Long applicationId);
+
+    @Query("""
+            SELECT n FROM InterviewNote n JOIN FETCH n.application a
+            ORDER BY n.interviewDate DESC, n.createdAt DESC""")
+    List<InterviewNote> findAllWithApplicationOrderByInterviewDateDesc();
 }
