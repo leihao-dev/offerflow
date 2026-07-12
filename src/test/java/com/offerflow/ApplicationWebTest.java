@@ -202,4 +202,11 @@ class ApplicationWebTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("逾期公司")));
     }
+
+    @Test
+    void listOverdueFilterShowsBanner() throws Exception {
+        mockMvc.perform(get("/applications").param("overdue", "1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("逾期未跟进")));
+    }
 }

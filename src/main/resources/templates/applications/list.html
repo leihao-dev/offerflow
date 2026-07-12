@@ -1,45 +1,48 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>投递列表 · OfferFlow</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}"/>
-</head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: shell('applications', '投递列表', '管理全部投递，按阶段筛选或搜索。', ~{::#headerActions}, ~{::#pageBody})}">
 <body>
-<header th:replace="~{fragments/nav :: nav('applications')}"></header>
-<main class="container">
-    <div th:replace="~{fragments/messages :: flash}"></div>
-    <h1>投递列表</h1>
-
-    <div class="actions" style="margin-bottom:12px;">
-        <a class="btn btn-sm" th:href="@{/applications/export-all}">导出全部 Markdown (zip)</a>
-    </div>
-
-    <div class="card" style="margin-bottom:16px;">
-        <form class="actions" method="get" th:action="@{/applications}">
-            <input type="hidden" name="stage" th:if="${selectedStage != null}" th:value="${selectedStage}"/>
-            <input name="q" type="search" placeholder="按公司或岗位搜索…" th:value="${searchQuery}"
-                   style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;"/>
-            <button class="btn btn-primary btn-sm" type="submit">搜索</button>
-            <a class="btn btn-sm" th:if="${searchQuery != null and !searchQuery.isBlank()}"
-               th:href="@{/applications(stage=${selectedStage})}">清除搜索</a>
-        </form>
-    </div>
-
-    <div class="actions">
-        <a class="btn btn-sm" th:classappend="${selectedStage == null} ? 'btn-primary' : ''"
-           th:href="@{/applications(q=${searchQuery})}">全部</a>
-        <a class="btn btn-sm" th:each="s : ${stages}"
-           th:classappend="${selectedStage == s} ? 'btn-primary' : ''"
-           th:href="@{/applications(stage=${s}, q=${searchQuery})}"
-           th:text="${T(com.offerflow.web.StageLabels).label(s)}">阶段</a>
+<th:block id="headerActions">
+    <a class="btn btn-default" th:href="@{/applications/export-all}">导出全部 Markdown (zip)</a>
+</th:block>
+<th:block id="pageBody">
+    <div class="filter-banner" th:if="${overdueFilter}">
+        <span>正在查看逾期未跟进投递</span>
+        <a class="btn btn-text btn-sm" th:href="@{/applications(q=${searchQuery}, stage=${selectedStage})}">查看全部</a>
     </div>
 
     <div class="card">
-        <table th:if="${!applications.isEmpty()}">
+        <form class="toolbar" method="get" th:action="@{/applications}">
+            <input type="hidden" name="stage" th:if="${selectedStage != null}" th:value="${selectedStage}"/>
+            <input type="hidden" name="overdue" th:if="${overdueFilter}" value="1"/>
+            <input class="search-input" name="q" type="search" placeholder="按公司或岗位搜索…" th:value="${searchQuery}"/>
+            <button class="btn btn-primary btn-sm" type="submit">搜索</button>
+            <a class="btn btn-text btn-sm" th:if="${searchQuery != null and !searchQuery.isBlank()}"
+               th:href="@{/applications(stage=${selectedStage}, overdue=${overdueFilter ? 1 : null})}">清除搜索</a>
+        </form>
+        <div class="chip-row">
+            <a class="btn btn-sm chip" th:classappend="${selectedStage == null and !overdueFilter} ? ' is-active' : ''"
+               th:href="@{/applications(q=${searchQuery})}">全部</a>
+            <a class="btn btn-sm chip" th:each="s : ${stages}"
+               th:classappend="${selectedStage == s and !overdueFilter} ? ' is-active' : ''"
+               th:href="@{/applications(stage=${s}, q=${searchQuery})}"
+               th:text="${T(com.offerflow.web.StageLabels).label(s)}">阶段</a>
+            <a class="btn btn-sm chip" th:classappend="${overdueFilter} ? ' is-active' : ''"
+               th:href="@{/applications(overdue=1, q=${searchQuery}, stage=${selectedStage})}">逾期</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <table class="data-table" th:if="${!applications.isEmpty()}">
             <thead>
-            <tr><th>公司</th><th>岗位</th><th>阶段</th><th>投递日</th><th>下次跟进</th><th></th></tr>
+            <tr>
+                <th>公司</th>
+                <th>岗位</th>
+                <th>阶段</th>
+                <th class="col-applied-at">投递日</th>
+                <th>下次跟进</th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
             <tr th:each="app : ${applications}"
@@ -49,25 +52,37 @@
                     <span th:if="${app.company == null}" th:text="${app.companyName}">公司</span>
                 </td>
                 <td th:text="${app.positionTitle}">岗位</td>
-                <td><span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span></td>
-                <td th:text="${app.appliedAt}">日期</td>
+                <td>
+                    <span class="badge">
+                        <span class="stage-dot" th:classappend="${T(com.offerflow.web.StageStyles).dotClass(app.stage)}"></span>
+                        <span th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span>
+                    </span>
+                </td>
+                <td class="col-applied-at" th:text="${app.appliedAt}">日期</td>
                 <td>
                     <span th:text="${app.nextFollowUpAt != null ? app.nextFollowUpAt : '-'}">跟进</span>
                     <span class="overdue-tag" th:if="${T(com.offerflow.support.FollowUpRules).isOverdue(app, today)}">逾期</span>
                 </td>
                 <td class="actions">
-                    <a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">详情</a>
-                    <a class="btn btn-sm" th:href="@{/applications/{id}/edit(id=${app.id})}">编辑</a>
+                    <a class="btn btn-text btn-sm" th:href="@{/applications/{id}(id=${app.id})}">详情</a>
+                    <a class="btn btn-text btn-sm" th:href="@{/applications/{id}/edit(id=${app.id})}">编辑</a>
                 </td>
             </tr>
             </tbody>
         </table>
-        <p th:if="${applications.isEmpty() and searchQuery != null and !searchQuery.isBlank()}" class="muted">
-            没有匹配「<span th:text="${searchQuery}"></span>」的投递。
-            <a th:href="@{/applications(stage=${selectedStage})}">清除搜索</a>
-        </p>
-        <p th:if="${applications.isEmpty() and (searchQuery == null or searchQuery.isBlank())}" class="muted">暂无记录。</p>
+        <div th:if="${applications.isEmpty() and searchQuery != null and !searchQuery.isBlank()}" class="empty-state">
+            <p>没有匹配「<span th:text="${searchQuery}"></span>」的投递</p>
+            <a class="btn btn-text" th:href="@{/applications(stage=${selectedStage}, overdue=${overdueFilter ? 1 : null})}">清除搜索</a>
+        </div>
+        <div th:if="${applications.isEmpty() and overdueFilter and (searchQuery == null or searchQuery.isBlank())}" class="empty-state">
+            <p>没有逾期未跟进的投递，很棒！</p>
+            <a class="btn btn-primary" th:href="@{/applications}">查看全部</a>
+        </div>
+        <div th:if="${applications.isEmpty() and !overdueFilter and (searchQuery == null or searchQuery.isBlank())}" class="empty-state">
+            <p>暂无投递记录</p>
+            <a class="btn btn-primary" th:href="@{/applications/new}">+ 新增投递</a>
+        </div>
     </div>
-</main>
+</th:block>
 </body>
 </html>
