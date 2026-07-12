@@ -1,47 +1,41 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>仪表盘 · OfferFlow</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}"/>
-</head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: shell('dashboard', '求职仪表盘', '一眼看清投递进度、本周面试与待跟进事项。', ~{::#headerActions}, ~{::#pageBody})}">
 <body>
-<header th:replace="~{fragments/nav :: nav('dashboard')}"></header>
-<main class="container">
-    <div th:replace="~{fragments/messages :: flash}"></div>
-    <h1>求职仪表盘</h1>
-    <p class="muted">一眼看清投递进度、本周面试与待跟进事项。</p>
-
-    <div class="grid-3">
-        <div class="card">
+<th:block id="headerActions">
+    <a class="btn btn-primary" th:href="@{/applications/new}">+ 新增投递</a>
+</th:block>
+<th:block id="pageBody">
+    <div class="stat-grid">
+        <a class="stat-card" th:href="@{/applications}">
             <div class="stat-value" th:text="${dashboard.activeCount()}">0</div>
             <div class="stat-label">进行中投递</div>
-        </div>
-        <div class="card">
+        </a>
+        <a class="stat-card" th:href="@{/applications}">
             <div class="stat-value" th:text="${dashboard.interviewsThisWeek()}">0</div>
             <div class="stat-label">本周面试</div>
-        </div>
-        <div class="card" th:classappend="${dashboard.overdueCount() > 0} ? 'card-alert' : ''">
+        </a>
+        <a class="stat-card" th:href="@{/applications(overdue=1)}"
+           th:classappend="${dashboard.overdueCount() > 0} ? ' card-alert' : ''">
             <div class="stat-value" th:classappend="${dashboard.overdueCount() > 0} ? 'stat-alert' : ''"
                  th:text="${dashboard.overdueCount()}">0</div>
             <div class="stat-label">逾期未跟进</div>
-        </div>
+        </a>
     </div>
 
     <div class="card" th:unless="${dashboard.weekInterviews().isEmpty()}">
         <h2>本周面试</h2>
-        <table>
+        <table class="data-table">
             <thead>
             <tr><th>日期</th><th>公司</th><th>岗位</th><th>轮次</th><th></th></tr>
             </thead>
             <tbody>
             <tr th:each="item : ${dashboard.weekInterviews()}">
-                <td th:text="${item.interviewDate()}">日期</td>
+                <td th:text="${#temporals.format(item.interviewDate(), 'MM-dd')}">日期</td>
                 <td th:text="${item.companyName()}">公司</td>
                 <td th:text="${item.positionTitle()}">岗位</td>
                 <td th:text="${item.roundLabel() != null ? item.roundLabel() : '-'}">轮次</td>
-                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${item.applicationId()})}">查看</a></td>
+                <td><a class="btn btn-text btn-sm" th:href="@{/applications/{id}(id=${item.applicationId()})}">查看</a></td>
             </tr>
             </tbody>
         </table>
@@ -49,17 +43,22 @@
 
     <div class="card" th:unless="${dashboard.overdueApplications().isEmpty()}">
         <h2>待跟进</h2>
-        <table>
+        <table class="data-table">
             <thead>
             <tr><th>公司</th><th>岗位</th><th>阶段</th><th>跟进日</th><th></th></tr>
             </thead>
             <tbody>
-            <tr th:each="app : ${dashboard.overdueApplications()}">
+            <tr th:each="app : ${dashboard.overdueApplications()}" class="row-overdue">
                 <td th:text="${app.companyName}">公司</td>
                 <td th:text="${app.positionTitle}">岗位</td>
-                <td><span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span></td>
+                <td>
+                    <span class="badge">
+                        <span class="stage-dot" th:classappend="${T(com.offerflow.web.StageStyles).dotClass(app.stage)}"></span>
+                        <span th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span>
+                    </span>
+                </td>
                 <td th:text="${app.nextFollowUpAt}">日期</td>
-                <td><a class="btn btn-sm" th:href="@{/applications/{id}(id=${app.id})}">查看</a></td>
+                <td><a class="btn btn-text btn-sm" th:href="@{/applications/{id}(id=${app.id})}">查看</a></td>
             </tr>
             </tbody>
         </table>
@@ -67,7 +66,7 @@
 
     <div class="card">
         <h2>最近更新</h2>
-        <table th:if="${!dashboard.recentApplications().isEmpty()}">
+        <table class="data-table" th:if="${!dashboard.recentApplications().isEmpty()}">
             <thead>
             <tr><th>公司</th><th>岗位</th><th>阶段</th><th>更新于</th></tr>
             </thead>
@@ -75,15 +74,21 @@
             <tr th:each="app : ${dashboard.recentApplications()}">
                 <td><a th:href="@{/applications/{id}(id=${app.id})}" th:text="${app.companyName}">公司</a></td>
                 <td th:text="${app.positionTitle}">岗位</td>
-                <td><span class="badge" th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span></td>
+                <td>
+                    <span class="badge">
+                        <span class="stage-dot" th:classappend="${T(com.offerflow.web.StageStyles).dotClass(app.stage)}"></span>
+                        <span th:text="${T(com.offerflow.web.StageLabels).label(app.stage)}">阶段</span>
+                    </span>
+                </td>
                 <td th:text="${#temporals.format(app.updatedAt, 'yyyy-MM-dd HH:mm')}">时间</td>
             </tr>
             </tbody>
         </table>
-        <p th:if="${dashboard.recentApplications().isEmpty()}" class="muted">
-            还没有投递记录，<a th:href="@{/applications/new}">添加第一条</a>。
-        </p>
+        <div th:if="${dashboard.recentApplications().isEmpty()}" class="empty-state">
+            <p>还没有投递记录</p>
+            <a class="btn btn-primary" th:href="@{/applications/new}">添加第一条</a>
+        </div>
     </div>
-</main>
+</th:block>
 </body>
 </html>
