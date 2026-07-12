@@ -7,6 +7,7 @@ import com.offerflow.model.ApplicationStage;
 import com.offerflow.service.InterviewNoteService;
 import com.offerflow.service.InterviewSearchService;
 import com.offerflow.service.JobApplicationService;
+import com.offerflow.support.DebriefLimits;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -65,6 +67,49 @@ class InterviewSearchServiceTest {
     void searchReturnsEmptyForBlankQuery() {
         assertTrue(searchService.search("   ").isEmpty());
         assertTrue(searchService.search(null).isEmpty());
+    }
+
+    @Test
+    void listRecentRespectsLimit() {
+        var app = applicationService.create(sampleApp("LimitCo", "Java"));
+        for (int i = 0; i < DebriefLimits.RECENT_DEBRIEF_LIMIT + 1; i++) {
+            createNote(app.getId(), LocalDate.of(2026, 7, 1).plusDays(i), "note-" + i);
+        }
+
+        List<InterviewSearchHit> recent = searchService.listRecent();
+
+        assertEquals(DebriefLimits.RECENT_DEBRIEF_LIMIT, recent.size());
+    }
+
+    @Test
+    void listRecentOrdersByInterviewDateDesc() {
+        var app = applicationService.create(sampleApp("OrderCo", "Go"));
+        createNote(app.getId(), LocalDate.of(2026, 7, 1), "older");
+        createNote(app.getId(), LocalDate.of(2026, 7, 15), "newer");
+
+        List<InterviewSearchHit> recent = searchService.listRecent();
+
+        assertFalse(recent.isEmpty());
+        assertEquals(LocalDate.of(2026, 7, 15), recent.get(0).interviewDate());
+    }
+
+    @Test
+    void searchStillFindsAcrossAllNotes() {
+        var app = applicationService.create(sampleApp("SearchCo", "Java"));
+        createNote(app.getId(), LocalDate.of(2026, 1, 1), "UniquePhase7bMarker");
+
+        List<InterviewSearchHit> hits = searchService.search("UniquePhase7bMarker");
+
+        assertEquals(1, hits.size());
+        assertEquals("SearchCo", hits.get(0).companyName());
+    }
+
+    private void createNote(Long appId, LocalDate date, String questions) {
+        InterviewNoteForm note = new InterviewNoteForm();
+        note.setApplicationId(appId);
+        note.setInterviewDate(date);
+        note.setQuestionsAsked(questions);
+        interviewNoteService.create(note);
     }
 
     private ApplicationForm sampleApp(String company, String position) {

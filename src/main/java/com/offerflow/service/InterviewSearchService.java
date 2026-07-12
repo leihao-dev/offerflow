@@ -4,7 +4,9 @@ import com.offerflow.dto.InterviewSearchHit;
 import com.offerflow.model.InterviewNote;
 import com.offerflow.model.JobApplication;
 import com.offerflow.repository.InterviewNoteRepository;
+import com.offerflow.support.DebriefLimits;
 import java.util.List;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,15 @@ public class InterviewSearchService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<InterviewSearchHit> listRecent() {
+        return interviewNoteRepository
+                .findRecentWithApplication(PageRequest.of(0, DebriefLimits.RECENT_DEBRIEF_LIMIT))
+                .stream()
+                .map(this::toBrowseHit)
+                .toList();
+    }
+
     private static boolean matches(InterviewNote note, String q) {
         String lower = q.toLowerCase();
         JobApplication app = note.getApplication();
@@ -56,6 +67,20 @@ public class InterviewSearchService {
             return trimmed.substring(0, MAX_QUERY_LENGTH);
         }
         return trimmed;
+    }
+
+    private InterviewSearchHit toBrowseHit(InterviewNote note) {
+        JobApplication app = note.getApplication();
+        String source = coalesce(note.getQuestionsAsked(), note.getSelfAssessment(), note.getImprovements());
+        String snippet = source == null ? "" : truncate(source.replace('\n', ' ').trim(), SNIPPET_LENGTH);
+        return new InterviewSearchHit(
+                note.getId(),
+                app.getId(),
+                app.getCompanyName(),
+                app.getPositionTitle(),
+                note.getInterviewDate(),
+                note.getRoundLabel(),
+                snippet);
     }
 
     private InterviewSearchHit toHit(InterviewNote note, String q) {
@@ -130,6 +155,9 @@ public class InterviewSearchService {
     }
 
     private static String truncate(String value, int max) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
         if (value.length() <= max) {
             return value;
         }
