@@ -62,6 +62,10 @@
   - `2026-07-12-phase7-ux-enhancement-design.md` + implementation plan
   - 飞书风设计系统、侧栏布局、仪表盘/列表门面页、`?overdue=1`
   - README 更新 Phase 7 文档（Task 40）
+- **Phase 7b（复盘 hub + 技术债，Task 41–44）：**
+  - `2026-07-12-phase7b-debrief-hub-design.md` + implementation plan
+  - 复盘记录页默认最近 50 条 + 搜索；详情锚点；侧栏「复盘记录」
+  - README 更新 Phase 7b 文档（Task 44）
 - **待手动完成（见 plan Task 1–6、8–9）：**
   - `.\gradlew.bat test` 基线
   - 全站手动 QA（清单见 wrap-up spec §3）
@@ -112,6 +116,7 @@
 4. **Phase 2 公司档案** 同一公司投多岗时，内推/招聘页只维护一次，投递详情一键外链
 5. **Phase 5 seed/模板 Registry** 新增一个 JSON 文件 + 注册表条目即可扩展，无需改核心逻辑
 6. **Phase 6 知识库** 复盘搜索 + 批量 zip + 预览，在 Phase 5 Registry 之上做「可检索、可带走、可发现」
+7. **Phase 7b 复盘 hub** 侧栏「复盘记录」+ 默认列表 + 搜索 + `#note-` 锚点，补 Phase 6「空搜索无内容」的产品缺口
 
 ---
 

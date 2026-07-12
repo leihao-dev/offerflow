@@ -11,7 +11,7 @@
 | 痛点 | 能力 |
 |------|------|
 | **A1 投递混乱** | 仪表盘、阶段筛选、跟进日期、逾期高亮、本周面试列表、投递搜索、单条/批量 Markdown 导出 |
-| **A2 面试复盘弱** | 带模板新增复盘（Java / 前端 React / Go）、**复盘全文搜索**（独立页） |
+| **A2 面试复盘弱** | 带模板新增复盘（Java / 前端 React / Go）、**复盘记录**页浏览/搜索、详情锚点跳转 |
 | **A3 准备无结构** | 投递详情按模板填充准备清单（仅空清单时写入）；**模板预览**后再填充 |
 | **A4 公司信息分散** | 目标公司档案库、3 套 seed 导入与**预览**、名称/行业搜索、投递关联、手动公司名关联提示 |
 
@@ -74,7 +74,7 @@ cd offerflow
 2. **新建投递** — `/applications/new` → 从下拉关联公司 → 填写岗位、阶段、跟进日
 3. **面试前** — 投递详情 → **预览**面试模板 → 填充准备清单
 4. **面试后** — 详情页「+ 复盘（带模板）」→ 在预填框架上补充实际内容
-5. **日常查看** — 仪表盘可点统计卡跳转；列表 `?q=` / `?overdue=1` 筛选；**复盘搜索**跨投递检索；单条或 **zip 批量** 导出 Markdown
+5. **日常查看** — 仪表盘可点统计卡跳转；列表 `?q=` / `?overdue=1` 筛选；**复盘记录**浏览最近 50 条或 `?q=` 搜索；单条或 **zip 批量** 导出 Markdown
 
 ---
 
@@ -84,6 +84,13 @@ cd offerflow
 - **设计系统**：飞书风色板（`tokens.css` / `layout.css` / `components.css`），阶段色点徽章
 - **仪表盘**：可点击统计卡（进行中 / 本周面试 / 逾期 → 列表或 `?overdue=1`）
 - **投递列表**：工具栏搜索 + 阶段 chips + 逾期筛选；sticky 表头、行 hover
+
+### 复盘记录（Phase 7b）
+
+- **侧栏「复盘记录」** — `/interviews/search`（URL 不变）
+- **默认浏览** — 最近 50 条复盘表格，与投递列表同款操作（详情 / 编辑）
+- **搜索** — `?q=` 跨全部复盘全文过滤
+- **详情锚点** — 详情链至 `/applications/{id}#note-{noteId}`，投递详情页高亮对应卡片
 
 ---
 
@@ -105,7 +112,7 @@ cd offerflow
 
 - **准备清单**：详情页下拉选模板 → POST 填充（已有内容时不覆盖）；可先 **预览模板** 查看 prep / 复盘框架
 - **复盘**：新增/编辑/删除面试记录；支持 `?template=` 预填复盘框架
-- **复盘搜索**：`/interviews/search?q=` 跨全部投递搜索问题、自评、改进与公司名/岗位
+- **复盘记录**：`/interviews/search` 默认最近 50 条；`?q=` 搜索全部；详情 / 编辑 / `#note-{id}` 锚点
 - 三套模板：Java 后端、前端 React、Go 后端
 
 ### 目标公司档案
@@ -145,7 +152,7 @@ cd offerflow
 | GET | `/applications/{id}/preview-template` | 预览面试模板（`?template=`） |
 | GET | `/applications/{id}/interviews/new` | 新增复盘（`?template=` 可选） |
 | POST | `/applications/{id}/interviews` | 保存复盘 |
-| GET | `/interviews/search` | 复盘全文搜索（`?q=`） |
+| GET | `/interviews/search` | 复盘记录（默认最近 50 条，`?q=` 搜索全部） |
 | GET | `/interviews/{id}/edit` | 编辑复盘 |
 | POST | `/interviews/{id}` | 更新复盘 |
 | POST | `/interviews/{id}/delete` | 删除复盘 |
@@ -224,7 +231,7 @@ offerflow/
 │   ├── repository/       # 数据访问
 │   ├── dto/              # 表单与 seed/template 传输对象
 │   ├── web/              # StageLabels、StageStyles、FlashMessages、异常处理
-│   └── support/          # FollowUpRules、ExportLimits 等
+│   └── support/          # FollowUpRules、ExportLimits、DebriefLimits 等
 ├── src/main/resources/
 │   ├── application.yml
 │   ├── templates/        # Thymeleaf 页面与 layout/sidebar fragments
@@ -264,6 +271,7 @@ offerflow/
 | [`2026-07-12-phase5-polish-expansion-design.md`](docs/superpowers/specs/2026-07-12-phase5-polish-expansion-design.md) | Phase 5 打磨与扩展包 |
 | [`2026-07-12-phase6-knowledge-portability-design.md`](docs/superpowers/specs/2026-07-12-phase6-knowledge-portability-design.md) | Phase 6 知识库与便携性 |
 | [`2026-07-12-phase7-ux-enhancement-design.md`](docs/superpowers/specs/2026-07-12-phase7-ux-enhancement-design.md) | Phase 7 UX 增强（飞书风侧栏） |
+| [`2026-07-12-phase7b-debrief-hub-design.md`](docs/superpowers/specs/2026-07-12-phase7b-debrief-hub-design.md) | Phase 7b 复盘 hub 与技术债 |
 
 实现计划见 [`docs/superpowers/plans/`](docs/superpowers/plans/)。
 
@@ -280,6 +288,7 @@ offerflow/
 | Phase 5 | A1 + 扩展 | 投递搜索、本周面试、Markdown 导出、3 seed + 3 模板下拉、公司名提示 |
 | Phase 6 | A2 + 便携 + 发现性 | 复盘全文搜索、批量 zip 导出、seed/模板预览 |
 | Phase 7 | UX | 飞书风设计系统、侧栏布局、仪表盘/列表改版、`?overdue=1` |
+| Phase 7b | A2 + 债务 | 复盘记录 hub、详情锚点、侧栏改名 |
 
 完整 commit 历史：`git log --oneline`。
 
