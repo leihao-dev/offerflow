@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '{\n  "additional_context": "OfferFlow reminder: if this edit changes behavior, update README.md, JOURNAL.md, or the related .claude skill/hook so the repo stays self-explanatory."\n}\n'

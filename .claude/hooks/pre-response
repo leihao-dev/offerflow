@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '{\n  "additional_context": "Before replying, check whether the user asked for workflow, journal, README, or OfferFlow usage guidance; if so, keep the answer concrete and repo-specific."\n}\n'

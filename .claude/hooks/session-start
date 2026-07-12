@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-# OfferFlow sessionStart hook — injects a daily logging reminder for Cursor.
+# OfferFlow session-start hook: remind the model what this repo is for.
 
-printf '{\n  "additional_context": "OfferFlow reminder: log any new job applications or interview debriefs in OfferFlow today (http://localhost:8080)."\n}\n'
+printf '{\n  "additional_context": "OfferFlow reminder: keep application logs, interview debriefs, README, JOURNAL, and .claude workflow docs in sync with what changed today."\n}\n'

@@ -5,6 +5,16 @@
       {
         "command": "bash .claude/hooks/session-start"
       }
+    ],
+    "postEdit": [
+      {
+        "command": "bash .claude/hooks/post-edit"
+      }
+    ],
+    "preResponse": [
+      {
+        "command": "bash .claude/hooks/pre-response"
+      }
     ]
   }
 }
