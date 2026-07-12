@@ -14,6 +14,7 @@ import com.offerflow.web.FlashMessages;
 import com.offerflow.web.StageLabels;
 import jakarta.validation.Valid;
 import com.offerflow.support.ExportLimits;
+import com.offerflow.support.FollowUpRules;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -58,12 +59,19 @@ public class ApplicationController {
     public String list(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) ApplicationStage stage,
+            @RequestParam(required = false, defaultValue = "false") boolean overdue,
             Model model) {
         LocalDate today = LocalDate.now();
-        model.addAttribute(
-                "applications", applicationService.search(Optional.ofNullable(q), Optional.ofNullable(stage)));
+        var applications = applicationService.search(Optional.ofNullable(q), Optional.ofNullable(stage));
+        if (overdue) {
+            applications = applications.stream()
+                    .filter(app -> FollowUpRules.isOverdue(app, today))
+                    .toList();
+        }
+        model.addAttribute("applications", applications);
         model.addAttribute("searchQuery", q);
         model.addAttribute("selectedStage", stage);
+        model.addAttribute("overdueFilter", overdue);
         model.addAttribute("stages", ApplicationStage.values());
         model.addAttribute("stageLabels", StageLabels.all());
         model.addAttribute("today", today);

@@ -187,4 +187,19 @@ class ApplicationWebTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("JVM")));
     }
+
+    @Test
+    void listOverdueFilterReturns200() throws Exception {
+        mockMvc.perform(post("/applications")
+                        .param("companyName", "逾期公司")
+                        .param("positionTitle", "Java")
+                        .param("stage", "APPLIED")
+                        .param("appliedAt", "2026-07-01")
+                        .param("nextFollowUpAt", "2026-07-01"))
+                .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(get("/applications").param("overdue", "1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("逾期公司")));
+    }
 }
