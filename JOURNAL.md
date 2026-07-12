@@ -54,6 +54,10 @@
   - 编写收尾 implementation plan（`docs/superpowers/plans/2026-07-12-cc-assignment-wrapup.md`）
   - 旁白稿见 wrap-up plan Task 2（`docs/superpowers/plans/2026-07-12-cc-assignment-wrapup.md`）
   - 补全 JOURNAL 收尾章节（本段 +「这玩意还不行」+ 作业检查表）
+- **Phase 6（知识库 + 便携性，Task 26–30）：**
+  - `2026-07-12-phase6-knowledge-portability-design.md` + implementation plan
+  - 复盘全文搜索 `/interviews/search`、批量 Markdown zip、seed/模板预览
+  - README 更新 Phase 6 文档（Task 30）
 - **待手动完成（见 plan Task 1–6、8–9）：**
   - `.\gradlew.bat test` 基线
   - 全站手动 QA（清单见 wrap-up spec §3）
@@ -103,6 +107,7 @@
 3. **手动测试 + brainstorming 复盘** 比直接让 AI「修一下」更有效——先列清 4 个 bug 和根因，再写 spec，一轮 commit 就收敛
 4. **Phase 2 公司档案** 同一公司投多岗时，内推/招聘页只维护一次，投递详情一键外链
 5. **Phase 5 seed/模板 Registry** 新增一个 JSON 文件 + 注册表条目即可扩展，无需改核心逻辑
+6. **Phase 6 知识库** 复盘搜索 + 批量 zip + 预览，在 Phase 5 Registry 之上做「可检索、可带走、可发现」
 
 ---
 
@@ -126,8 +131,9 @@
 
 ## 后续产品方向
 
-- 面经全文搜索 + 间隔重复复习
-- 批量导出 / 云同步
+- ~~面经全文搜索~~ → Phase 6 已做（`/interviews/search`）
+- 间隔重复复习
+- JSON 备份导入 / 云同步
 - 更多行业 seed 与模板包（按需扩展 JSON）
 
 ---
