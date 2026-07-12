@@ -80,6 +80,11 @@
             </select>
             <button class="btn btn-primary btn-sm" type="submit">填充准备清单</button>
         </form>
+        <div class="actions" style="margin-top:8px;">
+            <a class="btn btn-sm" th:each="pack : ${templatePacks}"
+               th:href="@{/applications/{id}/preview-template(id=${jobApplication.id}, template=${pack.id()})}"
+               th:text="'预览 ' + ${pack.title()}">预览</a>
+        </div>
     </div>
 
     <div class="card" th:if="${jobApplication.jdContent != null and !jobApplication.jdContent.isBlank()}">

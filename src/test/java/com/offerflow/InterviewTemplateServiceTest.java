@@ -112,6 +112,15 @@ class InterviewTemplateServiceTest {
                 () -> templateService.requirePack("unknown-pack"));
     }
 
+    @Test
+    void previewTemplateReturnsExcerpt() {
+        var preview = templateService.previewTemplate(InterviewTemplateService.JAVA_BACKEND);
+
+        assertEquals("Java 后端", preview.title());
+        assertTrue(preview.prepExcerpt().contains("JVM"));
+        assertTrue(preview.debriefSummary().contains("八股"));
+    }
+
     private ApplicationForm sampleApplication() {
         ApplicationForm form = new ApplicationForm();
         form.setCompanyName("测试公司");

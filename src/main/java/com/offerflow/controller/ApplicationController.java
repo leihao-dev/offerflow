@@ -122,6 +122,25 @@ public class ApplicationController {
         return "applications/detail";
     }
 
+    @GetMapping("/{id}/preview-template")
+    public String previewTemplate(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = InterviewTemplateService.JAVA_BACKEND) String template,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            JobApplication application = applicationService.requireApplication(id);
+            model.addAttribute("jobApplication", application);
+            model.addAttribute("templatePreview", interviewTemplateService.previewTemplate(template));
+            model.addAttribute("selectedTemplateId", template);
+            model.addAttribute("templatePacks", interviewTemplateService.listAvailableTemplates());
+            return "applications/template-preview";
+        } catch (UnknownInterviewTemplateException ex) {
+            redirectAttributes.addFlashAttribute(FlashMessages.ERROR, "模板不存在：" + template);
+            return "redirect:/applications/" + id;
+        }
+    }
+
     @GetMapping("/{id}/export")
     public ResponseEntity<byte[]> exportMarkdown(@PathVariable Long id) {
         JobApplication application = applicationService.requireApplication(id);

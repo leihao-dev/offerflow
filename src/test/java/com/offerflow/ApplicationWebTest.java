@@ -168,4 +168,23 @@ class ApplicationWebTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Disposition", containsString(".zip")));
     }
+
+    @Test
+    void previewTemplatePageShowsPrepExcerpt() throws Exception {
+        String redirectUrl = mockMvc.perform(post("/applications")
+                        .param("companyName", "预览公司")
+                        .param("positionTitle", "Java")
+                        .param("stage", "APPLIED")
+                        .param("appliedAt", "2026-07-12"))
+                .andExpect(status().is3xxRedirection())
+                .andReturn()
+                .getResponse()
+                .getRedirectedUrl();
+        String appId = redirectUrl.replace("/applications/", "");
+
+        mockMvc.perform(get("/applications/" + appId + "/preview-template")
+                        .param("template", InterviewTemplateService.JAVA_BACKEND))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("JVM")));
+    }
 }
