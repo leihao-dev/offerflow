@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="shell (activePage, title, subtitle, actions, main)">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${title} + ' · OfferFlow'">OfferFlow</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="app-shell">
+<div class="mobile-topbar">
+    <button type="button" class="btn btn-sm" data-sidebar-toggle
+            aria-expanded="false" aria-controls="app-sidebar" aria-label="打开菜单">☰</button>
+    <a class="sidebar-brand" th:href="@{/}">OfferFlow</a>
+</div>
+<div class="sidebar-overlay"></div>
+<aside id="app-sidebar" th:replace="~{fragments/nav :: sidebar(${activePage})}"></aside>
+<div class="main-wrap">
+    <div class="main-content">
+        <div th:replace="~{fragments/messages :: flash}"></div>
+        <div th:replace="~{fragments/page-header :: header(${title}, ${subtitle}, ${actions})}"></div>
+        <th:block th:insert="${main}"></th:block>
+    </div>
+</div>
+<script th:src="@{/js/app-shell.js}"></script>
+</body>
+</html>

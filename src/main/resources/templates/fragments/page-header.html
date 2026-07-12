@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="page-header" th:fragment="header(title, subtitle, actions)">
+    <div>
+        <h1 th:text="${title}">标题</h1>
+        <p class="subtitle" th:if="${subtitle != null and !subtitle.isBlank()}" th:text="${subtitle}"></p>
+    </div>
+    <th:block th:if="${actions != null}">
+        <div class="page-header-actions" th:insert="${actions}"></div>
+    </th:block>
+</header>
+</body>
+</html>
